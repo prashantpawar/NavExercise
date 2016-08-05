@@ -1,0 +1,16 @@
+[huge-nav] {
+  background: #ec008c;
+  color: #fff;
+  height: 60px;
+  font-size: 24px;
+  line-height: 60px;
+}
+
+[huge-nav] ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+[huge-nav] li {
+  display: inline;
+}

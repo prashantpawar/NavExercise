@@ -1,8 +1,17 @@
 @import "fonts.css";
 
 body {
-  background: #ec008c;
-  color: #fff;
+  background: white;
+  color: black;
+  margin: 0;
+  font-family: HUGEAvantGardeBold;
+}
+
+main {
+  display: block;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
 h1 {
