@@ -1,22 +1,35 @@
+/**
+ * General styling for the navbar
+ **/
 [huge-nav] {
   background: #ec008c;
   color: #fff;
-  height: 60px;
+  height: 60px; /** def $navbar-height **/
   font-size: 24px;
-  line-height: 60px;
 }
 
-[huge-nav] ul {
-  display: inline;
+[huge-nav] [huge-nav-list] {
+  display: inline-block;
   margin: 0;
+  padding-left: 12px;
   list-style-type: none;
 }
 
-[huge-nav] li {
-  display: inline;
+[huge-nav] [huge-nav-item] {
+  display: inline-block;
+  padding: 16px 24px;
+  cursor: pointer;
+  margin-left: -5px;
+  position: relative;
+  overflow: visible;
 }
 
-[huge-nav] h1 {
+[huge-nav] [huge-nav-item]:hover {
+  background: white;
+  color: #ec008c;
+}
+
+[huge-nav] > h1 {
     display: inline;
     margin: 0px;
     font-size: inherit;
@@ -28,6 +41,37 @@
 [huge-nav] .close-nav {
   display: none;
 }
+
+/**
+ * Subnav styling
+ **/
+[huge-nav-item] [huge-subnav] {
+  display: none;
+}
+
+[huge-nav-item]:hover [huge-subnav] {
+  line-height: 48px;
+  display: block;
+  position: absolute;
+  z-index: 100;
+  background: white;
+  color: black;
+  left: 0;
+  top: 60px; /** $navbar-height **/
+  padding-left: 0;
+}
+
+[huge-subnav] li {
+  display: block;
+  height: 48px;
+  white-space: nowrap;
+  padding: 12px 24px;
+}
+
+
+/**
+ * Styling for the hamburger version of the nav
+ **/
 
 [huge-nav][hamburger-menu] {
 }
@@ -44,20 +88,22 @@
 [huge-nav][hamburger-menu] .close-nav {
   display: inline-block;
   float: right;
-  margin-right: 24px;
+  padding-right: 24px;
+  padding-left: 24px;
+  cursor: pointer;
 }
 
-[huge-nav][hamburger-menu] h1 {
+[huge-nav][hamburger-menu] > h1 {
 }
 
-[huge-nav][hamburger-menu] ul {
+[huge-nav][hamburger-menu] > ul {
   display: block;
   color: black;
   position: absolute;
   z-index: 100;
   width: calc(100% - 72px - 24px);
   background: white;
-  height: calc(100% - 60px);
+  height: calc(100% - 60px); /** 100% - $navbar-height **/
   padding-left: 24px;
 }
 

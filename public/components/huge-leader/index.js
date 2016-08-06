@@ -1,6 +1,5 @@
 (function (hugeApp) {
   function init() {
-    console.log("leader");
     hugeApp.registerElement('huge-leader');
   }
 
