@@ -149,6 +149,7 @@
   display: block;
   float: right;
   transform: rotate(90deg);
+  transition: transform 0.5s ease;
 }
 
 [huge-nav][hamburger-menu] > h1 {
@@ -163,18 +164,28 @@
   background: white;
   top: 60px; /** 100% - $navbar-height **/
   bottom: 0;
+  padding-left: 0;
+  padding-top: 12px;
 }
 
 [huge-nav][hamburger-menu] [huge-nav-item] {
   display: block;
   width: 100%;
-  /*height: 48px;*/
   margin-left: 0;
-  padding: 12px 24px;
+  padding: 12px 0;
+}
+[huge-nav][hamburger-menu] [huge-nav-item]:hover {
 }
 
-[huge-nav] [huge-nav-item] > a {
+[huge-nav][hamburger-menu] [huge-nav-item]:hover .chevron {
+  transform: rotate(-90deg);
+}
+
+[huge-nav][hamburger-menu] [huge-nav-item] > a {
   color: black;
+  padding-left: 24px;
+  padding-right: 12px;
+  display: block;
 }
 
 [huge-nav][hamburger-menu] [huge-nav-item] [huge-subnav] {
@@ -183,10 +194,19 @@
   height: 0px;
 }
 
+[huge-nav][hamburger-menu] [huge-subnav] li {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
 [huge-nav][hamburger-menu] [huge-subnav] a {
   padding-left: 0;
 }
 
 [huge-nav][hamburger-menu] [huge-nav-item]:hover [huge-subnav] {
   height: auto;
+}
+
+[huge-nav][hamburger-menu] [huge-nav-item]:hover [huge-subnav] li:first-of-type {
+  margin-top: 12px;
 }
