@@ -1,5 +1,13 @@
 @import "fonts.css";
 
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   background: white;
   color: black;
@@ -12,4 +20,31 @@ main {
   height: 100%;
   width: 100%;
   position: relative;
+}
+
+.chevron {
+    display: block;
+    width: .7em;
+    height: .9em;
+    position: relative;
+}
+
+.chevron:before,
+.chevron:after {
+    display:block;
+    content:"";
+    width:0;
+    height:0em;
+    border-style:solid;
+    position:absolute;
+}
+.chevron:before {
+    right:0;
+    border-width:.5em 0 .5em .5em;
+    border-color:transparent transparent transparent red;
+}
+.chevron:after {
+    left:0;
+    border-width:.5em 0 .5em .5em;
+    border-color:transparent transparent transparent #fff;
 }

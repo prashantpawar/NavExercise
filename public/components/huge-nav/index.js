@@ -29,7 +29,7 @@
     hugeApp.hugeNavElements = document.querySelectorAll('[huge-nav]');
 
     //Sadly hugeNavElements does not have my favorite fn map
-    //Array.prototype.map.call(hugeApp.hugeNavElements, enableHamburgerMenu);
+    Array.prototype.map.call(hugeApp.hugeNavElements, enableHamburgerMenu);
   }
 
 
