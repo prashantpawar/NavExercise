@@ -9,14 +9,16 @@
 }
 
 [huge-nav] [huge-nav-list] {
-  display: inline-block;
+  display: block;
+  float: left;
   margin: 0;
   padding-left: 12px;
   list-style-type: none;
 }
 
 [huge-nav] [huge-nav-item] {
-  display: inline-block;
+  display: block;
+  float: left;
   padding: 16px 24px;
   cursor: pointer;
   margin-left: -5px;
@@ -30,10 +32,11 @@
 }
 
 [huge-nav] > h1 {
-    display: inline;
+    display: block;
+    float: left;
     margin: 0px;
     font-size: inherit;
-    line-height: inherit;
+    line-height: 60px; /** $navbar-height **/
     padding-left: 24px;
     padding-right: 24px;
 }
@@ -42,23 +45,29 @@
   display: none;
 }
 
+[huge-nav] footer {
+  display: none;
+}
+
 /**
  * Subnav styling
  **/
 [huge-nav-item] [huge-subnav] {
-  display: none;
+  display: block;
+  float: left;
+  position: absolute;
+  visibility: hidden;
+  background: white;
+  color: black;
+  padding-left: 0;
+  z-index: 100;
+  left: 0;
+  top: 60px; /** $navbar-height **/
+  line-height: 48px;
 }
 
 [huge-nav-item]:hover [huge-subnav] {
-  line-height: 48px;
-  display: block;
-  position: absolute;
-  z-index: 100;
-  background: white;
-  color: black;
-  left: 0;
-  top: 60px; /** $navbar-height **/
-  padding-left: 0;
+  visibility: visible;
 }
 
 [huge-subnav] li {
