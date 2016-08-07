@@ -15,7 +15,7 @@ window.hugeApp.store = (function (hugeApp) {
         state = reducer(this.getState(), action);
 
         callbacks.map(function (cb) {
-          cb(); 
+          cb(state); 
         });
       },
       subscribe: function (cb) {
@@ -30,7 +30,7 @@ window.hugeApp.store = (function (hugeApp) {
 
 window.hugeApp.actions = (function (hugeApp) {
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
-  var MENU_ITEMS_LOADED = 'MENU_ITEMS_LOADED';
+  var NAV_ITEMS_LOADED = 'NAV_ITEMS_LOADED';
 
   function changeViewport(viewportType) {
     return {
@@ -39,10 +39,10 @@ window.hugeApp.actions = (function (hugeApp) {
     }
   }
 
-  function menuItemsLoaded(menuItems) {
+  function navItemsLoaded(navItems) {
     return {
-      type: MENU_ITEMS_LOADED,
-      menuItems: menuItems
+      type: NAV_ITEMS_LOADED,
+      navItems: navItems
     }
   }
 
@@ -51,21 +51,21 @@ window.hugeApp.actions = (function (hugeApp) {
     * Action types
     **/
     VIEWPORT_CHANGE: VIEWPORT_CHANGE,
-    MENU_ITEMS_LOADED: MENU_ITEMS_LOADED,
+    NAV_ITEMS_LOADED: NAV_ITEMS_LOADED,
 
     /**
     * Other constants
     **/
     ViewportTypes: {
-      HAMBURGER_MENU: 'HAMBURGER_MENU',
-      STANDARD_MENU: 'STANDARD_MENU'
+      NARROW: 'NARROW',
+      WIDE: 'WIDE'
     },
 
     /**
     * Action Creators
     **/
     changeViewport: changeViewport,
-    menuItemsLoaded: menuItemsLoaded
+    navItemsLoaded: navItemsLoaded
   }
 }(window.hugeApp));
 
@@ -74,8 +74,8 @@ window.hugeApp.reducers = (function (hugeApp) {
   var ViewportTypes = actions.ViewportTypes;
 
   var initialState = {
-    viewportType: ViewportTypes.STANDARD_MENU,
-    items: []
+    viewportType: ViewportTypes.WIDE,
+    navItems: []
   };
 
   return {
@@ -93,9 +93,9 @@ window.hugeApp.reducers = (function (hugeApp) {
           return Object.assign({}, state, {
             viewportType: action.viewportType
           });
-        case actions.MENU_ITEMS_LOADED:
+        case actions.NAV_ITEMS_LOADED:
           return Object.assign({}, state, {
-            items: action.items 
+            navItems: action.navItems 
           });
         default:
           return state;
@@ -109,17 +109,24 @@ window.hugeApp = (function (hugeApp, document) {
   var reducers = hugeApp.reducers;
   var createStore = hugeApp.store.createStore;
 
+  function render(state) {
+    console.log(store.getState());
+  }
+
   function initApp() {
     console.log("app being initialized", hugeApp);
+    /**
+     * SETUP
+     **/
     store = createStore(reducers.hugeAppReducer);
-    function render () {
-      console.log(store.getState());
-    }
     store.subscribe(render);
-    render();
+    render(store.getState());
+    /**
+     * END SETUP
+     **/
 
     document.addEventListener('click', function () {
-      store.dispatch(actions.changeViewport(actions.ViewportTypes.HAMBURGER_MENU));
+      store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
     });
   }
 
