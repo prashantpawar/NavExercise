@@ -204,14 +204,21 @@ window.hugeApp = (function (hugeApp, document) {
   }
 
   function renderPrimaryNav(state, rootEl) {
-    var primaryNavHook = rootEl.getElementsByTagName('huge-primary-nav');
-    //
-    //Handle re-render
-    if(primaryNavHook.length === 0) {
-      primaryNavHook = document.createElement('huge-primary-nav');
-      rootEl.appendChild(primaryNavHook);
-    } else {
-      primaryNavHook = primaryNavHook[0];
+    var hamburgerOrCloseEl = rootEl.querySelector('.hamburger-close-nav');
+
+    var primaryNavHook = document.createElement('huge-primary-nav');
+
+    if(!hamburgerOrCloseEl) {
+      hamburgerOrCloseEl = document.createElement('span');
+      hamburgerOrCloseEl.setAttribute('class', 'hamburger-close-nav');
+      hamburgerOrCloseEl.onclick = function () {
+        if(store.getState().navOpen) {
+          store.dispatch(actions.closeNav());
+        } else {
+          store.dispatch(actions.openNav());
+        }
+      };
+      rootEl.appendChild(hamburgerOrCloseEl);
     }
 
     var hugeLabel = document.createElement('h1');
@@ -222,25 +229,34 @@ window.hugeApp = (function (hugeApp, document) {
     ulPrimaryNav.setAttribute('huge-primary-nav', '');
     primaryNavHook.appendChild(ulPrimaryNav);
 
-    var hamburgerOrCloseEl = document.createElement('span');
-    hamburgerOrCloseEl.setAttribute('class', 'hamburger-close-nav');
-    rootEl.appendChild(hamburgerOrCloseEl);
-
     var footerEl = document.createElement('footer');
     footerEl.innerHTML = '&copy; 2016 Huge. All Rights Reserved.';
     primaryNavHook.appendChild(footerEl);
 
-
     state.navItems.map(function (item) {
       renderPrimaryNavItem(item, ulPrimaryNav);
     });
+    
+    //Handle re-render
+    var existingPrimaryNavHook = rootEl.querySelector('huge-primary-nav');
+    if(existingPrimaryNavHook) {
+      rootEl.replaceChild(primaryNavHook, existingPrimaryNavHook);
+    } else {
+      rootEl.appendChild(primaryNavHook);
+    }
   }
 
-  function renderViewportNavEnhancements(state, rootEl) {
+  function renderNavEnhancements(state, rootEl) {
     if(state.viewportType === actions.ViewportTypes.NARROW) {
       rootEl.setAttribute('hamburger-menu', '');
     } else {
       rootEl.removeAttribute('hamburger-menu');
+    }
+
+    if(state.navOpen === true) {
+      rootEl.setAttribute('nav-open', '');
+    } else if(state.navOpen === false) {
+      rootEl.removeAttribute('nav-open');
     }
   }
 
@@ -248,7 +264,7 @@ window.hugeApp = (function (hugeApp, document) {
     var navNode = rootEl.querySelector('[huge-nav]');
 
     renderPrimaryNav(state, navNode);
-    renderViewportNavEnhancements(state, navNode);
+    renderNavEnhancements(state, navNode);
   }
 
   function render(state, rootEl) {
@@ -271,16 +287,6 @@ window.hugeApp = (function (hugeApp, document) {
     /**
      * END SETUP
      **/
-
-    /**
-    document.addEventListener('click', function () {
-      if(store.getState().viewportType === actions.ViewportTypes.WIDE) {
-        store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
-      } else {
-        store.dispatch(actions.changeViewport(actions.ViewportTypes.WIDE));
-      }
-    });
-    **/
   }
 
   function registerElement(elementName) {
