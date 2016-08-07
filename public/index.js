@@ -11,12 +11,23 @@ window.hugeApp.store = (function (hugeApp) {
       getState: function () {
         return state;
       },
-      dispatch: function (action) {
-        state = reducer(this.getState(), action);
+      dispatchWithVal: function (action) {
+        var that = this;
+        state = reducer(that.getState(), action);
 
         callbacks.map(function (cb) {
           cb(state); 
         });
+      },
+      dispatch: function (action) {
+        var that = this;
+        if(typeof action.then === 'function') {
+          action.then(function (resolvedAction) {
+              that.dispatchWithVal(resolvedAction);
+          });
+        } else {
+            that.dispatchWithVal(action);
+        }
       },
       subscribe: function (cb) {
         callbacks.push(cb);
@@ -31,6 +42,17 @@ window.hugeApp.store = (function (hugeApp) {
 window.hugeApp.actions = (function (hugeApp) {
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
   var NAV_ITEMS_LOADED = 'NAV_ITEMS_LOADED';
+  
+  function fetch(url) {
+    return new Promise(function (fulfill, reject) {
+      var oReq = new XMLHttpRequest();
+      oReq.addEventListener('load', function (evt) {
+          fulfill(this.responseText);
+      });
+      oReq.open("GET", url);
+      oReq.send();
+    });
+  }
 
   function changeViewport(viewportType) {
     return {
@@ -39,11 +61,14 @@ window.hugeApp.actions = (function (hugeApp) {
     }
   }
 
-  function navItemsLoaded(navItems) {
-    return {
-      type: NAV_ITEMS_LOADED,
-      navItems: navItems
-    }
+  function loadNavItems() {
+    return fetch('/api/nav.json').then(function (response) {
+      var navItems = JSON.parse(response);
+      return {
+        type: NAV_ITEMS_LOADED,
+        navItems: navItems.items
+      }
+    });
   }
 
   return {
@@ -65,7 +90,7 @@ window.hugeApp.actions = (function (hugeApp) {
     * Action Creators
     **/
     changeViewport: changeViewport,
-    navItemsLoaded: navItemsLoaded
+    loadNavItems: loadNavItems
   }
 }(window.hugeApp));
 
@@ -109,8 +134,42 @@ window.hugeApp = (function (hugeApp, document) {
   var reducers = hugeApp.reducers;
   var createStore = hugeApp.store.createStore;
 
-  function render(state) {
+  /**
+  function addPrimaryNavItem(state, rootEl) {
+      
+  }
+
+  function addSecondaryNavItem(state, rootEl) {
+      
+  }
+
+  function setNavType(state, rootEl) {
+    if(state === actions.NARROW) {
+      rootEl.setAttribute('hamburger-menu', 'show');
+    }
+    return rootEl;
+  }
+
+  function renderNav(state, rootEl) {
+    rootEl.querySelector('[huge-nav]');
+    setNavType(state.viewportType, rootEl);
+    state.items.map(function (item) {
+      addNavItem(item, rootEl);
+    });
+
+    var ulElement = document.createElement('ul');
+    ul.setAttribute('huge-primary-nav');
+
+    return rootEl;
+  }
+  **/
+
+  function render(state, rootEl) {
+    if(typeof rootEl === 'undefined') {
+      rootEl = document.getElementById('root');
+    }
     console.log(store.getState());
+    //renderNav(state, rootEl);
   }
 
   function initApp() {
@@ -124,6 +183,8 @@ window.hugeApp = (function (hugeApp, document) {
     /**
      * END SETUP
      **/
+
+    store.dispatch(actions.loadNavItems());
 
     document.addEventListener('click', function () {
       store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
