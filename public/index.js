@@ -4,12 +4,6 @@ window.hugeApp = {};
 
 window.hugeApp.utils = (function (hugeApp) {
   return {
-    head: function (arr) {
-      if(arr.length >= 1)
-        return arr[0];
-      else
-        throw new Error("Element not found");
-    }
   }
 })(window.hugeApp);
 
@@ -162,7 +156,6 @@ window.hugeApp = (function (hugeApp, document) {
     ulSecondaryNav.setAttribute('huge-secondary-nav', '');
 
     state.map(function (item) {
-      console.log(item);
       renderSecondaryNavItem(item, ulSecondaryNav);
     });
     
@@ -184,23 +177,41 @@ window.hugeApp = (function (hugeApp, document) {
   }
 
   function renderPrimaryNav(state, rootEl) {
-    var primaryNavHook = utils.head(rootEl.getElementsByTagName('huge-primary-nav'));
+    var primaryNavHook = rootEl.getElementsByTagName('huge-primary-nav');
+
     var ulPrimaryNav = document.createElement('ul');
     ulPrimaryNav.setAttribute('huge-primary-nav', '');
+
+    if(primaryNavHook.length === 0) {
+      primaryNavHook = rootEl.querySelector('[huge-primary-nav]');
+    } else {
+      primaryNavHook = primaryNavHook[0];
+    }
+
     primaryNavHook.parentNode.replaceChild(ulPrimaryNav, primaryNavHook);
+
     state.navItems.map(function (item) {
       renderPrimaryNavItem(item, ulPrimaryNav);
     });
   }
 
   function renderNav(state, rootEl) {
-      renderPrimaryNav(state, rootEl);
+    var navNode = rootEl.querySelector('[huge-nav]');
+
+    if(state.viewportType === actions.ViewportTypes.NARROW) {
+      navNode.setAttribute('hamburger-menu', '');
+    } else {
+      navNode.removeAttribute('hamburger-menu');
+    }
+
+    renderPrimaryNav(state, rootEl);
   }
 
   function render(state, rootEl) {
     if(typeof rootEl === 'undefined') {
       rootEl = document.getElementById('root');
     }
+    console.log('rendering');
 
     renderNav(state, rootEl);
   }
@@ -219,7 +230,11 @@ window.hugeApp = (function (hugeApp, document) {
 
 
     document.addEventListener('click', function () {
-      store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
+      if(store.getState().viewportType === actions.ViewportTypes.WIDE) {
+        store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
+      } else {
+        store.dispatch(actions.changeViewport(actions.ViewportTypes.WIDE));
+      }
     });
   }
 
