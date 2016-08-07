@@ -14,6 +14,13 @@
   text-decoration: none;
 }
 
+[huge-nav] huge-primary-nav {
+  display: block;
+  position: relative;
+  z-index: 100;
+  margin: 0;
+}
+
 [huge-nav] [huge-primary-nav] {
   display: block;
   float: left;
@@ -47,7 +54,7 @@
   color: #ec008c;
 }
 
-[huge-nav] > h1 {
+huge-primary-nav > h1 {
   display: block;
   float: left;
   margin: 0px;
@@ -58,7 +65,7 @@
   font-size: 21px;
 }
 
-[huge-nav] .close-nav, [huge-nav] .chevron {
+[huge-nav] .hamburger-close-nav, [huge-nav] .chevron {
   display: none;
 }
 
@@ -122,91 +129,156 @@
  * Styling for the hamburger version of the nav
  **/
 
-[huge-nav][hamburger-menu] {
-}
+@media only screen and (max-width:768px){
+  /* styles for browsers narrower than 768px; */
+  [huge-nav] {
+  }
 
-[huge-nav][hamburger-menu] footer {
-  color: black;
-  position: absolute;
-  bottom: 0px;
-  z-index: 100;
-  margin-left: 24px;
-  font-size: 12px;
-}
+  [huge-nav] footer {
+    color: black;
+    position: absolute;
+    bottom: 0px;
+    z-index: 100;
+    margin-left: 24px;
+    font-size: 12px;
+  }
 
-[huge-nav][hamburger-menu] .close-nav {
-  display: inline-block;
-  float: right;
-  cursor: pointer;
-  margin: 0px;
-  line-height: 60px; /** $navbar-height **/
-  padding-left: 24px;
-  padding-right: 24px;
-  font-size: 21px;
-}
+  /**
+  [huge-nav] .hamburger-close-nav {
+    display: inline-block;
+    float: right;
+    cursor: pointer;
+    margin: 0px;
+    line-height: 60px; /** $navbar-height **//**
+    padding-left: 24px;
+    padding-right: 24px;
+    font-size: 21px;
+  }
+  **/
 
-[huge-nav][hamburger-menu] .chevron {
-  display: block;
-  float: right;
-  transform: rotate(90deg);
-  transition: transform 0.5s ease;
-}
+  [huge-nav] .chevron {
+    display: block;
+    float: right;
+    transform: rotate(90deg);
+    transition: transform 0.5s ease;
+  }
+  [huge-nav] huge-primary-nav {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
 
-[huge-nav][hamburger-menu] > h1 {
-}
+  [huge-nav] [huge-primary-nav] {
+    display: block;
+    color: black;
+    position: absolute;
+    z-index: 100;
+    width: calc(100% - 72px);
+    background: white;
+    top: 60px; /** 100% - $navbar-height **/
+    bottom: 0;
+    padding-left: 0;
+    padding-top: 12px;
+  }
 
-[huge-nav][hamburger-menu] [huge-primary-nav] {
-  display: block;
-  color: black;
-  position: absolute;
-  z-index: 100;
-  width: calc(100% - 72px);
-  background: white;
-  top: 60px; /** 100% - $navbar-height **/
-  bottom: 0;
-  padding-left: 0;
-  padding-top: 12px;
-}
+  [huge-nav] huge-primary-nav {
+    transform: translate(-100%, 0);
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item] {
-  display: block;
-  width: 100%;
-  margin-left: 0;
-  padding: 12px 0;
-}
-[huge-nav][hamburger-menu] [huge-nav-item]:hover {
-}
+  [huge-nav][nav-open] huge-primary-nav {
+    transform: translate(0, 0);
+    transition: transform 0.1s 0.2s ease;
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item]:hover .chevron {
-  transform: rotate(-90deg);
-}
+  [huge-nav] [huge-nav-item] {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    padding: 12px 0;
+  }
+  [huge-nav] [huge-nav-item]:hover {
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item] > a {
-  color: black;
-  padding-left: 24px;
-  padding-right: 12px;
-  display: block;
-}
+  [huge-nav] [huge-nav-item]:hover .chevron {
+    transform: rotate(-90deg);
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item] [huge-secondary-nav] {
-  position: static;
-  float: none;
-  height: 0px;
-}
+  [huge-nav] [huge-nav-item] > a {
+    color: black;
+    padding-left: 24px;
+    padding-right: 12px;
+    display: block;
+  }
 
-[huge-nav][hamburger-menu] [huge-secondary-nav] li {
-  padding-left: 24px;
-  padding-right: 24px;
-}
+  [huge-nav] [huge-nav-item] [huge-secondary-nav] {
+    position: static;
+    float: none;
+    height: 0px;
+  }
 
-[huge-nav][hamburger-menu] [huge-secondary-nav] a {
-  padding-left: 0;
-}
+  [huge-nav] [huge-secondary-nav] li {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item]:hover [huge-secondary-nav] {
-  height: auto;
-}
+  [huge-nav] [huge-secondary-nav] a {
+    padding-left: 0;
+  }
 
-[huge-nav][hamburger-menu] [huge-nav-item]:hover [huge-secondary-nav] li:first-of-type {
-  margin-top: 12px;
+  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] {
+    height: auto;
+  }
+
+  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] li:first-of-type {
+    margin-top: 12px;
+  }
+
+  /**
+   * Hamburger/Close icon styling
+   **/
+  [huge-nav] .hamburger-close-nav, [huge-nav] .hamburger-close-nav:before, [huge-nav] .hamburger-close-nav:after {
+    cursor: pointer;
+    height: 4px;
+    width: 24px;
+    background: white;
+    position: absolute;
+    display: block;
+    content: '';
+  }
+
+  [huge-nav] .hamburger-close-nav {
+    top: calc(20px + 8px);
+    left: 24px;
+  }
+
+  [huge-nav] .hamburger-close-nav:before {
+    top: -7px; 
+  }
+
+  [huge-nav] .hamburger-close-nav:after {
+    top: 7px;
+  }
+
+  [huge-nav] .hamburger-close-nav, [huge-nav] .hamburger-close-nav:before, [huge-nav] .hamburger-close-nav:after {
+    transition: all 500ms ease-in-out;
+  }
+
+  [huge-nav][nav-open] .hamburger-close-nav {
+    background-color: transparent;
+    left: calc(100% - 48px);
+  }
+
+  [huge-nav][nav-open] .hamburger-close-nav:before, [huge-nav][nav-open] .hamburger-close-nav:after {
+    top: 0;
+  }
+
+  [huge-nav][nav-open] .hamburger-close-nav:before {
+    transform: rotate(45deg);
+  }
+
+  [huge-nav][nav-open] .hamburger-close-nav:after {
+    transform: rotate(-45deg);
+  }
 }

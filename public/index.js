@@ -45,6 +45,8 @@ window.hugeApp.store = (function (hugeApp) {
 })(window.hugeApp);
 
 window.hugeApp.actions = (function (hugeApp) {
+  var NAV_OPEN = 'NAV_OPEN';
+  var NAV_CLOSE = 'NAV_CLOSE';
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
   var NAV_ITEMS_LOADED = 'NAV_ITEMS_LOADED';
   
@@ -57,6 +59,18 @@ window.hugeApp.actions = (function (hugeApp) {
       oReq.open("GET", url);
       oReq.send();
     });
+  }
+
+  function openNav() {
+    return {
+      type: NAV_OPEN
+    }
+  }
+
+  function closeNav() {
+    return {
+      type: NAV_CLOSE
+    }
   }
 
   function changeViewport(viewportType) {
@@ -81,6 +95,8 @@ window.hugeApp.actions = (function (hugeApp) {
     * Action types
     **/
     VIEWPORT_CHANGE: VIEWPORT_CHANGE,
+    NAV_OPEN: NAV_OPEN,
+    NAV_CLOSE: NAV_CLOSE,
     NAV_ITEMS_LOADED: NAV_ITEMS_LOADED,
 
     /**
@@ -94,6 +110,8 @@ window.hugeApp.actions = (function (hugeApp) {
     /**
     * Action Creators
     **/
+    openNav: openNav,
+    closeNav: closeNav,
     changeViewport: changeViewport,
     loadNavItems: loadNavItems
   }
@@ -104,6 +122,7 @@ window.hugeApp.reducers = (function (hugeApp) {
   var ViewportTypes = actions.ViewportTypes;
 
   var initialState = {
+    navOpen: false,
     viewportType: ViewportTypes.WIDE,
     navItems: []
   };
@@ -111,14 +130,22 @@ window.hugeApp.reducers = (function (hugeApp) {
   return {
     hugeAppReducer: function (state, action) {
       if(typeof state === 'undefined') {
-          state = initialState;
+        state = initialState;
       }
 
       if(!action || !action.type) {
-          return state;
+        return state;
       }
 
       switch(action.type) {
+        case actions.NAV_OPEN:
+          return Object.assign({}, state, {
+            navOpen: true
+          });
+        case actions.NAV_CLOSE:
+          return Object.assign({}, state, {
+            navOpen: false
+          });
         case actions.VIEWPORT_CHANGE:
           return Object.assign({}, state, {
             viewportType: action.viewportType
@@ -178,33 +205,50 @@ window.hugeApp = (function (hugeApp, document) {
 
   function renderPrimaryNav(state, rootEl) {
     var primaryNavHook = rootEl.getElementsByTagName('huge-primary-nav');
-
-    var ulPrimaryNav = document.createElement('ul');
-    ulPrimaryNav.setAttribute('huge-primary-nav', '');
-
+    //
+    //Handle re-render
     if(primaryNavHook.length === 0) {
-      primaryNavHook = rootEl.querySelector('[huge-primary-nav]');
+      primaryNavHook = document.createElement('huge-primary-nav');
+      rootEl.appendChild(primaryNavHook);
     } else {
       primaryNavHook = primaryNavHook[0];
     }
 
-    primaryNavHook.parentNode.replaceChild(ulPrimaryNav, primaryNavHook);
+    var hugeLabel = document.createElement('h1');
+    hugeLabel.innerHTML = 'HUGE';
+    primaryNavHook.appendChild(hugeLabel);
+
+    var ulPrimaryNav = document.createElement('ul');
+    ulPrimaryNav.setAttribute('huge-primary-nav', '');
+    primaryNavHook.appendChild(ulPrimaryNav);
+
+    var hamburgerOrCloseEl = document.createElement('span');
+    hamburgerOrCloseEl.setAttribute('class', 'hamburger-close-nav');
+    rootEl.appendChild(hamburgerOrCloseEl);
+
+    var footerEl = document.createElement('footer');
+    footerEl.innerHTML = '&copy; 2016 Huge. All Rights Reserved.';
+    primaryNavHook.appendChild(footerEl);
+
 
     state.navItems.map(function (item) {
       renderPrimaryNavItem(item, ulPrimaryNav);
     });
   }
 
+  function renderViewportNavEnhancements(state, rootEl) {
+    if(state.viewportType === actions.ViewportTypes.NARROW) {
+      rootEl.setAttribute('hamburger-menu', '');
+    } else {
+      rootEl.removeAttribute('hamburger-menu');
+    }
+  }
+
   function renderNav(state, rootEl) {
     var navNode = rootEl.querySelector('[huge-nav]');
 
-    if(state.viewportType === actions.ViewportTypes.NARROW) {
-      navNode.setAttribute('hamburger-menu', '');
-    } else {
-      navNode.removeAttribute('hamburger-menu');
-    }
-
-    renderPrimaryNav(state, rootEl);
+    renderPrimaryNav(state, navNode);
+    renderViewportNavEnhancements(state, navNode);
   }
 
   function render(state, rootEl) {
@@ -228,7 +272,7 @@ window.hugeApp = (function (hugeApp, document) {
      * END SETUP
      **/
 
-
+    /**
     document.addEventListener('click', function () {
       if(store.getState().viewportType === actions.ViewportTypes.WIDE) {
         store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
@@ -236,6 +280,7 @@ window.hugeApp = (function (hugeApp, document) {
         store.dispatch(actions.changeViewport(actions.ViewportTypes.WIDE));
       }
     });
+    **/
   }
 
   function registerElement(elementName) {
