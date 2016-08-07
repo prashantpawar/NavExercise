@@ -6,13 +6,13 @@ window.hugeApp.store = (function (hugeApp) {
   var callbacks = [];
   var state;
   function createStore(reducer) {
+    state = reducer();
     return {
       getState: function () {
         return state;
       },
       dispatch: function (action) {
         state = reducer(this.getState(), action);
-        console.log("state inside store", state, action);
 
         callbacks.map(function (cb) {
           cb(); 
@@ -80,17 +80,20 @@ window.hugeApp.reducers = (function (hugeApp) {
 
   return {
     hugeAppReducer: function (state, action) {
-      console.log("inside reducer", state, action);
       if(typeof state === 'undefined') {
           state = initialState;
       }
 
+      if(!action || !action.type) {
+          return state;
+      }
+
       switch(action.type) {
-        case action.VIEWPORT_CHANGE:
+        case actions.VIEWPORT_CHANGE:
           return Object.assign({}, state, {
             viewportType: action.viewportType
           });
-        case action.MENU_ITEMS_LOADED:
+        case actions.MENU_ITEMS_LOADED:
           return Object.assign({}, state, {
             items: action.items 
           });
