@@ -2,6 +2,17 @@ console.log("index.js loaded");
 
 window.hugeApp = {};
 
+window.hugeApp.utils = (function (hugeApp) {
+  return {
+    head: function (arr) {
+      if(arr.length >= 1)
+        return arr[0];
+      else
+        throw new Error("Element not found");
+    }
+  }
+})(window.hugeApp);
+
 window.hugeApp.store = (function (hugeApp) {
   var callbacks = [];
   var state;
@@ -133,43 +144,65 @@ window.hugeApp = (function (hugeApp, document) {
   var actions = hugeApp.actions;
   var reducers = hugeApp.reducers;
   var createStore = hugeApp.store.createStore;
+  var utils = hugeApp.utils;
 
-  /**
-  function addPrimaryNavItem(state, rootEl) {
-      
+  function renderSecondaryNavItem(state, rootEl) {
+    var liElement = document.createElement('li');
+
+    var anchorElement = document.createElement('a');
+    anchorElement.setAttribute('href', state.url);
+    anchorElement.innerHTML = state.label;
+    liElement.appendChild(anchorElement);
+
+    rootEl.appendChild(liElement);
   }
 
-  function addSecondaryNavItem(state, rootEl) {
-      
+  function renderSecondaryNav(state, rootEl) {
+    var ulSecondaryNav = document.createElement('ul');
+    ulSecondaryNav.setAttribute('huge-secondary-nav', '');
+
+    state.map(function (item) {
+      console.log(item);
+      renderSecondaryNavItem(item, ulSecondaryNav);
+    });
+    
+    rootEl.appendChild(ulSecondaryNav);
   }
 
-  function setNavType(state, rootEl) {
-    if(state === actions.NARROW) {
-      rootEl.setAttribute('hamburger-menu', 'show');
-    }
-    return rootEl;
+  function renderPrimaryNavItem(state, rootEl) {
+    var liElement = document.createElement('li');
+    liElement.setAttribute('huge-nav-item', '');
+
+    var anchorElement = document.createElement('a');
+    anchorElement.setAttribute('href', state.url);
+    anchorElement.innerHTML = state.label;
+    liElement.appendChild(anchorElement);
+
+    renderSecondaryNav(state.items, liElement);
+
+    rootEl.appendChild(liElement);
+  }
+
+  function renderPrimaryNav(state, rootEl) {
+    var primaryNavHook = utils.head(rootEl.getElementsByTagName('huge-primary-nav'));
+    var ulPrimaryNav = document.createElement('ul');
+    ulPrimaryNav.setAttribute('huge-primary-nav', '');
+    primaryNavHook.parentNode.replaceChild(ulPrimaryNav, primaryNavHook);
+    state.navItems.map(function (item) {
+      renderPrimaryNavItem(item, ulPrimaryNav);
+    });
   }
 
   function renderNav(state, rootEl) {
-    rootEl.querySelector('[huge-nav]');
-    setNavType(state.viewportType, rootEl);
-    state.items.map(function (item) {
-      addNavItem(item, rootEl);
-    });
-
-    var ulElement = document.createElement('ul');
-    ul.setAttribute('huge-primary-nav');
-
-    return rootEl;
+      renderPrimaryNav(state, rootEl);
   }
-  **/
 
   function render(state, rootEl) {
     if(typeof rootEl === 'undefined') {
       rootEl = document.getElementById('root');
     }
-    console.log(store.getState());
-    //renderNav(state, rootEl);
+
+    renderNav(state, rootEl);
   }
 
   function initApp() {
@@ -179,24 +212,25 @@ window.hugeApp = (function (hugeApp, document) {
      **/
     store = createStore(reducers.hugeAppReducer);
     store.subscribe(render);
-    render(store.getState());
+    store.dispatch(actions.loadNavItems());
     /**
      * END SETUP
      **/
 
-    store.dispatch(actions.loadNavItems());
 
     document.addEventListener('click', function () {
       store.dispatch(actions.changeViewport(actions.ViewportTypes.NARROW));
     });
   }
 
+  function registerElement(elementName) {
+    var customEl = document.registerElement(elementName);
+    return customEl;
+  }
+
   return Object.assign({}, hugeApp, {
     initApp: initApp,
-    registerElement: function registerElement(elementName) {
-      var customEl = document.registerElement(elementName);
-      return customEl;
-    }
+    registerElement: registerElement
   });
 }(window.hugeApp, document));
 
