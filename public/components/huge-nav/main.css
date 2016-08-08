@@ -302,9 +302,15 @@ huge-primary-nav > h1 {
   }
 }
 
-@media only screen and (min-width:768px) and (max-width:793px){
+@media only screen and (min-width:771px) and (max-width:793px){
   [huge-nav] [huge-nav-item] {
     margin-left: -25px;
+  }
+}
+
+@media only screen and (min-width:768px) and (max-width:771px){
+  [huge-nav] [huge-nav-item] {
+    margin-left: -30px;
   }
 }
 
