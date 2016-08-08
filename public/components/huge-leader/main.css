@@ -32,9 +32,23 @@ huge-leader h1 {
     }
 }
 
-@media only screen and (min-width:768px) and (max-width:847px){
+@media only screen and (min-width:828px) and (max-width:847px){
   huge-leader h1 {
       font-size: 80px;
       line-height: 100px;
+    }
+}
+
+@media only screen and (min-width:793px) and (max-width:828px){
+  huge-leader h1 {
+      font-size: 60px;
+      line-height: 80px;
+    }
+}
+
+@media only screen and (min-width:768px) and (max-width:793px){
+  huge-leader h1 {
+      font-size: 50px;
+      line-height: 60px;
     }
 }

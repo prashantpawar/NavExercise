@@ -267,7 +267,9 @@ window.hugeApp = (function (hugeApp, document) {
 
     if(state.navOpen === true) {
       rootEl.setAttribute('nav-open', '');
+      rootEl.removeAttribute('nav-close');
     } else {
+      rootEl.setAttribute('nav-close', '');
       rootEl.removeAttribute('nav-open');
     }
   }
@@ -290,6 +292,7 @@ window.hugeApp = (function (hugeApp, document) {
 
   function initApp() {
     console.log("app being initialized", hugeApp);
+    document.getElementById('root').removeAttribute('class');
     /**
      * SETUP
      **/
