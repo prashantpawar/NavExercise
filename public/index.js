@@ -1,5 +1,3 @@
-console.log("index.js loaded");
-
 window.hugeApp = {};
 
 window.hugeApp.utils = (function (hugeApp, document) {
@@ -66,7 +64,7 @@ window.hugeApp.store = (function (hugeApp) {
   };
 })(window.hugeApp);
 
-window.hugeApp.actions = (function (hugeApp) {
+window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   var NAV_OPEN = 'NAV_OPEN';
   var NAV_CLOSE = 'NAV_CLOSE';
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
@@ -137,10 +135,10 @@ window.hugeApp.actions = (function (hugeApp) {
     changeViewport: changeViewport,
     loadNavItems: loadNavItems
   }
-}(window.hugeApp));
+};
 
-window.hugeApp.reducers = (function (hugeApp) {
-  var actions = hugeApp.actions;
+window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
+  var actions = hugeApp.actions(hugeApp, XMLHttpRequest);;
   var ViewportTypes = actions.ViewportTypes;
 
   var initialState = {
@@ -181,11 +179,11 @@ window.hugeApp.reducers = (function (hugeApp) {
       }
     }
   };
-})(window.hugeApp);
+};
 
-window.hugeApp = (function (hugeApp, document) {
-  var actions = hugeApp.actions;
-  var reducers = hugeApp.reducers;
+window.hugeApp.main = function (hugeApp, document, XMLHttpRequest) {
+  var actions = hugeApp.actions(hugeApp, XMLHttpRequest);
+  var reducers = hugeApp.reducers(hugeApp, XMLHttpRequest);
   var createStore = hugeApp.store.createStore;
   var utils = hugeApp.utils;
 
@@ -285,13 +283,11 @@ window.hugeApp = (function (hugeApp, document) {
     if(typeof rootEl === 'undefined') {
       rootEl = document.getElementById('root');
     }
-    console.log('rendering');
 
     renderNav(state, rootEl);
   }
 
   function initApp() {
-    console.log("app being initialized", hugeApp);
     document.getElementById('root').removeAttribute('class');
     /**
      * SETUP
@@ -311,8 +307,14 @@ window.hugeApp = (function (hugeApp, document) {
 
   return Object.assign({}, hugeApp, {
     initApp: initApp,
+    //Exposing these methods for easier testing
+    renderSecondaryNavItem: renderSecondaryNavItem,
+    renderSecondaryNav: renderSecondaryNav,
+    renderPrimaryNavItem: renderPrimaryNavItem,
+    renderPrimaryNav, renderPrimaryNav,
+    renderNavEnhancements: renderNavEnhancements,
+    renderNav: renderNav,
+    render: render,
     registerElement: registerElement
   });
-}(window.hugeApp, document));
-
-document.addEventListener('DOMContentLoaded', hugeApp.initApp);
+};
