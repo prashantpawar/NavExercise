@@ -13,7 +13,28 @@ huge-leader h1 {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   margin: 0;
-  font: 20vmin/1 HUGEAvantGardeBold;
+  font: 120px/132px HUGEAvantGardeBold;
   letter-spacing: -0.06em;
   text-align: center;
+}
+
+@media only screen and (max-width:768px){
+  huge-leader h1 {
+      font-size: 44px;
+      line-height: 49px;
+    }
+}
+
+@media only screen and (min-width:847px) and (max-width:1017px){
+  huge-leader h1 {
+      font-size: 100px;
+      line-height: 120px;
+    }
+}
+
+@media only screen and (min-width:768px) and (max-width:847px){
+  huge-leader h1 {
+      font-size: 80px;
+      line-height: 100px;
+    }
 }

@@ -61,7 +61,6 @@ huge-primary-nav > h1 {
   font-size: 21px;
   line-height: 60px; /** $navbar-height **/
   margin: 0px;
-  margin-top: -60px;
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -132,19 +131,21 @@ huge-primary-nav > h1 {
 
 @media only screen and (max-width:768px){
   /* styles for browsers narrower than 768px; */
-  [huge-nav] {
+  huge-primary-nav > h1 {
+    margin-top: -60px;
   }
 
   [huge-nav] footer {
     background: white;
-    bottom: 0px;
+    bottom: 16px;
     color: black;
     display: table-row;
     font-size: 12px;
+    line-height: 16px;
     position: absolute;
-    padding-bottom: 17px;
+    padding-bottom: 16px;
     padding-left: 24px;
-    padding-top: 17px;
+    padding-top: 16px;
     width: 100%;
     z-index: 100;
   }
@@ -264,7 +265,7 @@ huge-primary-nav > h1 {
 
   [huge-nav][nav-open] .hamburger-close-nav {
     background-color: transparent;
-    left: calc(100% - 48px);
+    left: calc(100% - 60px);
   }
 
   [huge-nav][nav-open] .hamburger-close-nav:before, [huge-nav][nav-open] .hamburger-close-nav:after {
@@ -277,5 +278,29 @@ huge-primary-nav > h1 {
 
   [huge-nav][nav-open] .hamburger-close-nav:after {
     transform: rotate(-45deg);
+  }
+}
+
+@media only screen and (min-width:863px) and (max-width:898px){
+  [huge-nav] [huge-nav-item] {
+    margin-left: -10px;
+  }
+}
+
+@media only screen and (min-width:828px) and (max-width:863px){
+  [huge-nav] [huge-nav-item] {
+    margin-left: -15px;
+  }
+}
+
+@media only screen and (min-width:793px) and (max-width:828px){
+  [huge-nav] [huge-nav-item] {
+    margin-left: -20px;
+  }
+}
+
+@media only screen and (min-width:768px) and (max-width:793px){
+  [huge-nav] [huge-nav-item] {
+    margin-left: -25px;
   }
 }

@@ -22,6 +22,12 @@ main {
   position: relative;
 }
 
+main p {
+  font-size: 24px;
+  line-height: 36px;
+  text-indent: 24px;
+}
+
 .chevron {
     display: block;
     width: .7em;
@@ -47,4 +53,11 @@ main {
     left:0;
     border-width:.5em 0 .5em .5em;
     border-color:transparent transparent transparent #fff;
+}
+
+@media only screen and (max-width:768px){
+  main p {
+    font-size: 14px;
+    line-height: 24px;
+  }
 }
