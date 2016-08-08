@@ -1,6 +1,6 @@
 var expect = chai.expect;
 
-//These are the same util library from our app code, copy-pasted 
+//These are the same util library from our app code, copy-pasted
 utils = {
   createElement: function (tagName, attributes, innerHTML, parentElement) {
     var el = document.createElement(tagName);
@@ -35,7 +35,7 @@ utils = {
         deepFreeze(o[prop]);
       }
     });
-    
+
     return o;
   }
 };
@@ -159,7 +159,7 @@ describe('hugeApp', function() {
         hugeApp = hugeAppConstructor(hugeApp, document, xhr);
 
         hugeApp.initApp();
-        requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse)); 
+        requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse));
 
         expect(mockStore.subscribe.called).to.be.true;
       });
@@ -200,7 +200,7 @@ describe('hugeApp', function() {
         expect(state).to.deep.equal(oldState);
       });
 
-      describe('which should not mutate state for', function () {
+      describe('which should handle actions and not mutate state for', function () {
         it('NAV_OPEN action', function () {
           var oldState = {
             navOpen: false,
@@ -215,8 +215,8 @@ describe('hugeApp', function() {
 
           utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
 
-          var state = reducerFn(oldState, { type: actions.NAV_OPEN});
-          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+          var state = reducerFn(oldState, { type: actions.NAV_OPEN}); //this should set oldState.navOpen to true
+          expect(state).to.deep.equal(newState);
         });
 
         it('NAV_CLOSE action', function () {
@@ -233,8 +233,8 @@ describe('hugeApp', function() {
 
           utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
 
-          var state = reducerFn(oldState, { type: actions.NAV_CLOSE});
-          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+          var state = reducerFn(oldState, { type: actions.NAV_CLOSE}); //this should set oldState.navOpen to true
+          expect(state).to.deep.equal(newState);
         });
 
         it('VIEWPORT_CHANGE action', function () {
@@ -251,8 +251,11 @@ describe('hugeApp', function() {
 
           utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
 
-          var state = reducerFn(oldState, { type: actions.VIEWPORT_CHANGE, viewportType: actions.ViewportTypes.NARROW});
-          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+          var state = reducerFn(oldState, {
+            type: actions.VIEWPORT_CHANGE,
+            viewportType: actions.ViewportTypes.NARROW
+          });
+          expect(state).to.deep.equal(newState);
         });
 
         it('NAV_ITEMS_LOADED action', function () {
@@ -269,8 +272,11 @@ describe('hugeApp', function() {
 
           utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
 
-          var state = reducerFn(oldState, { type: actions.NAV_ITEMS_LOADED, navItems: fakeNavAPIResponse.items});
-          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+          var state = reducerFn(oldState, {
+            type: actions.NAV_ITEMS_LOADED,
+            navItems: fakeNavAPIResponse.items
+          });
+          expect(state).to.deep.equal(newState);
         });
       });
     });
