@@ -3,53 +3,16 @@
 <head>
   <title>HUGE NavExercise</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script type="text/javascript" src="/components/huge-leader/index.js"></script>
-  <script type="text/javascript" src="/components/huge-nav/index.js"></script>
-  <script type="text/javascript" src="/index.js"></script>
+  <!--<script type="text/javascript" src="/components/huge-leader/huge-leader.js"></script>-->
+  <!--<script type="text/javascript" src="/components/huge-nav/huge-nav.js"></script>-->
+  <script type="text/javascript" src="/index.js" ></script>
   <link rel="stylesheet" href="/components/huge-leader/main.css">
   <link rel="stylesheet" href="/components/huge-nav/main.css">
   <link rel="stylesheet" href="/styles/main.css">
 </head>
-<body>
+<body id='root'>
   <nav huge-nav>
-    <h1>HUGE</h1>
-    <ul huge-primary-nav>
-      <li huge-nav-item>
-        <a href="#">Work</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">About
-          <i class="chevron"></i>
-        </a>
-        <ul huge-secondary-nav>
-          <li><a href="#">What we do</a></li>
-          <li><a href="#">How we work</a></li>
-          <li><a href="#">Leadership</a></li>
-        </ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">Careers</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">Ideas</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">News</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">Events</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-      <li huge-nav-item>
-        <a href="#">Contact</a>
-        <ul huge-secondary-nav></ul>
-      </li>
-    </ul>
-    <footer>&copy; 2016 Huge. All Rights Reserved.</footer>
+    <huge-primary-nav></huge-primary-nav>
   </nav>
   <main>
     <huge-leader>
