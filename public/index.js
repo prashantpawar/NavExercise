@@ -181,7 +181,7 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
   };
 };
 
-window.hugeApp.main = function (hugeApp, document, XMLHttpRequest) {
+window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
   var actions = hugeApp.actions(hugeApp, XMLHttpRequest);
   var reducers = hugeApp.reducers(hugeApp, XMLHttpRequest);
   var createStore = hugeApp.store.createStore;
@@ -194,7 +194,7 @@ window.hugeApp.main = function (hugeApp, document, XMLHttpRequest) {
 
     rootEl.appendChild(liElement);
   }
-
+  constructor
   function renderSecondaryNav(state, rootEl) {
     var ulSecondaryNav = utils.createElement('ul', {'huge-secondary-nav': ''}, null, rootEl);
 
