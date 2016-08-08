@@ -23,6 +23,20 @@ utils = {
     }
 
     return parentEl;
+  },
+  deepFreeze: function deepFreeze(o) {//This method allows us to ensure that an object remains immutable
+    Object.freeze(o);
+
+    Object.getOwnPropertyNames(o).forEach(function (prop) {
+      if (o.hasOwnProperty(prop)
+      && o[prop] !== null
+      && (typeof o[prop] === "object" || typeof o[prop] === "function")
+      && !Object.isFrozen(o[prop])) {
+        deepFreeze(o[prop]);
+      }
+    });
+    
+    return o;
   }
 };
 
@@ -152,15 +166,112 @@ describe('hugeApp', function() {
     });
   });
 
-  describe('reducers', function() {
+  describe('reducers module', function() {
     it('should be defined', function() {
       expect(hugeApp.reducers).to.not.be.undefined;
-      console.log(hugeApp.reducers(hugeApp, xhr));
     });
 
-    describe('should not mutate state for', function () {
-      it('NAV_OPEN action', function () {
-          
+    describe('should return a reducer function', function () {
+      var reducerFn, actions;
+      beforeEach(function () {
+        actions = hugeApp.actions(hugeApp, xhr);
+        reducerFn = hugeApp.reducers(hugeApp, xhr).hugeAppReducer;
+      });
+
+      it('which should be defined', function() {
+        expect(reducerFn).to.not.be.undefined;
+      });
+
+      it('which should return a default state with valid value', function() {
+        state = reducerFn();
+        expect(state.navOpen).to.not.be.defined;
+        expect(['NARROW', 'WIDE']).to.contain(state.viewportType);
+        expect(state.navItems.length).to.equal(0);
+      });
+
+      it('which should return the same state for invalid action', function () {
+        var oldState = {
+          navOpen: false,
+          viewportType: actions.ViewportTypes.WIDE,
+          navItems: []
+        };
+
+        var state = reducerFn(oldState, {type: 'Invalid Action'});
+        expect(state).to.deep.equal(oldState);
+      });
+
+      describe('which should not mutate state for', function () {
+        it('NAV_OPEN action', function () {
+          var oldState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+          var newState = {
+            navOpen: true,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+
+          utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
+
+          var state = reducerFn(oldState, { type: actions.NAV_OPEN});
+          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+        });
+
+        it('NAV_CLOSE action', function () {
+          var oldState = {
+            navOpen: true,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+          var newState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+
+          utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
+
+          var state = reducerFn(oldState, { type: actions.NAV_CLOSE});
+          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+        });
+
+        it('VIEWPORT_CHANGE action', function () {
+          var oldState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+          var newState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.NARROW,
+            navItems: []
+          };
+
+          utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
+
+          var state = reducerFn(oldState, { type: actions.VIEWPORT_CHANGE, viewportType: actions.ViewportTypes.NARROW});
+          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+        });
+
+        it('NAV_ITEMS_LOADED action', function () {
+          var oldState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: []
+          };
+          var newState = {
+            navOpen: false,
+            viewportType: actions.ViewportTypes.WIDE,
+            navItems: fakeNavAPIResponse.items
+          };
+
+          utils.deepFreeze(oldState); //We freeze the oldState to prevent mutation
+
+          var state = reducerFn(oldState, { type: actions.NAV_ITEMS_LOADED, navItems: fakeNavAPIResponse.items});
+          expect(state).to.deep.equal(newState); //this should set oldState.navOpen to true
+        });
       });
     });
   });
