@@ -204,15 +204,23 @@ window.hugeApp = (function (hugeApp, document) {
   }
 
   function renderPrimaryNav(state, rootEl) {
+    var primaryNavHook = rootEl.getElementsByTagName('huge-primary-nav');
     var hamburgerOrCloseEl = rootEl.querySelector('.hamburger-close-nav');
+    var reRender = false;
 
-    var primaryNavHook = document.createElement('huge-primary-nav');
+    //Handle re-render
+    if(primaryNavHook.length === 0) {
+      primaryNavHook = document.createElement('huge-primary-nav');
+      rootEl.appendChild(primaryNavHook);
+    } else {
+      primaryNavHook = primaryNavHook[0];
+    }
 
     if(!hamburgerOrCloseEl) {
       hamburgerOrCloseEl = document.createElement('span');
       hamburgerOrCloseEl.setAttribute('class', 'hamburger-close-nav');
       hamburgerOrCloseEl.onclick = function () {
-        if(store.getState().navOpen) {
+        if(store.getState().navOpen === true) {
           store.dispatch(actions.closeNav());
         } else {
           store.dispatch(actions.openNav());
@@ -221,29 +229,26 @@ window.hugeApp = (function (hugeApp, document) {
       rootEl.appendChild(hamburgerOrCloseEl);
     }
 
-    var hugeLabel = document.createElement('h1');
-    hugeLabel.innerHTML = 'HUGE';
-    primaryNavHook.appendChild(hugeLabel);
 
-    var ulPrimaryNav = document.createElement('ul');
-    ulPrimaryNav.setAttribute('huge-primary-nav', '');
-    primaryNavHook.appendChild(ulPrimaryNav);
+    var ulPrimaryNav = document.querySelector('ul[huge-primary-nav]');
+    //TODO: Refactor this approach, this isn't optimal
+    if(!ulPrimaryNav) { //Static elements, no need to re-render
+      var hugeLabel = document.createElement('h1');
+      hugeLabel.innerHTML = 'HUGE';
+      primaryNavHook.appendChild(hugeLabel);
 
-    var footerEl = document.createElement('footer');
-    footerEl.innerHTML = '&copy; 2016 Huge. All Rights Reserved.';
-    primaryNavHook.appendChild(footerEl);
+      ulPrimaryNav = document.createElement('ul');
+      ulPrimaryNav.setAttribute('huge-primary-nav', '');
+      primaryNavHook.appendChild(ulPrimaryNav);
+
+      var footerEl = document.createElement('footer');
+      footerEl.innerHTML = '&copy; 2016 Huge. All Rights Reserved.';
+      primaryNavHook.appendChild(footerEl);
+    }
 
     state.navItems.map(function (item) {
       renderPrimaryNavItem(item, ulPrimaryNav);
     });
-    
-    //Handle re-render
-    var existingPrimaryNavHook = rootEl.querySelector('huge-primary-nav');
-    if(existingPrimaryNavHook) {
-      rootEl.replaceChild(primaryNavHook, existingPrimaryNavHook);
-    } else {
-      rootEl.appendChild(primaryNavHook);
-    }
   }
 
   function renderNavEnhancements(state, rootEl) {
@@ -255,7 +260,7 @@ window.hugeApp = (function (hugeApp, document) {
 
     if(state.navOpen === true) {
       rootEl.setAttribute('nav-open', '');
-    } else if(state.navOpen === false) {
+    } else {
       rootEl.removeAttribute('nav-open');
     }
   }
