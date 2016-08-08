@@ -18,6 +18,13 @@ window.hugeApp.utils = (function (hugeApp, document) {
         parentElement.appendChild(el);
       }
       return el;
+    },
+    removeAllChildElements: function (parentEl) {
+      while(parentEl.firstChild) {
+          parentEl.removeChild(parentEl.firstChild);
+      }
+
+      return parentEl;
     }
   }
 })(window.hugeApp, document);
@@ -31,7 +38,7 @@ window.hugeApp.store = (function (hugeApp) {
       getState: function () {
         return state;
       },
-      dispatchWithVal: function (action) {
+      dispatchWithVal: function (action) { //Thunks would be helpful here
         var that = this;
         state = reducer(that.getState(), action);
 
@@ -204,6 +211,10 @@ window.hugeApp = (function (hugeApp, document) {
     var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
 
     renderSecondaryNav(state.items, liElement);
+
+    if(state.items.length > 0) {
+      utils.createElement('span', {'class': 'chevron'}, null, anchorElement);
+    }
   }
 
   function renderPrimaryNav(state, rootEl) {
@@ -229,7 +240,6 @@ window.hugeApp = (function (hugeApp, document) {
       };
     }
 
-
     var hugeLabel, footerEl;
     var ulPrimaryNav = document.querySelector('ul[huge-primary-nav]');
     //TODO: Refactor this approach, this isn't optimal
@@ -240,6 +250,8 @@ window.hugeApp = (function (hugeApp, document) {
 
       footerEl = utils.createElement('footer', null, '&copy; 2016 Huge. All Rights Reserved.', primaryNavHook);
     }
+
+    utils.removeAllChildElements(ulPrimaryNav);
 
     state.navItems.map(function (item) {
       renderPrimaryNavItem(item, ulPrimaryNav);
