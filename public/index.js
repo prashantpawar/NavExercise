@@ -2,10 +2,25 @@ console.log("index.js loaded");
 
 window.hugeApp = {};
 
-window.hugeApp.utils = (function (hugeApp) {
+window.hugeApp.utils = (function (hugeApp, document) {
   return {
+    createElement: function (tagName, attributes, innerHTML, parentElement) {
+      var el = document.createElement(tagName);
+      for(var key in attributes) {
+        if (!attributes.hasOwnProperty(key)) continue;
+
+        el.setAttribute(key, attributes[key]);
+      }
+      if(innerHTML) {
+        el.innerHTML = innerHTML;
+      }
+      if(parentElement) {
+        parentElement.appendChild(el);
+      }
+      return el;
+    }
   }
-})(window.hugeApp);
+})(window.hugeApp, document);
 
 window.hugeApp.store = (function (hugeApp) {
   var callbacks = [];
@@ -170,37 +185,25 @@ window.hugeApp = (function (hugeApp, document) {
   function renderSecondaryNavItem(state, rootEl) {
     var liElement = document.createElement('li');
 
-    var anchorElement = document.createElement('a');
-    anchorElement.setAttribute('href', state.url);
-    anchorElement.innerHTML = state.label;
-    liElement.appendChild(anchorElement);
+    var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
 
     rootEl.appendChild(liElement);
   }
 
   function renderSecondaryNav(state, rootEl) {
-    var ulSecondaryNav = document.createElement('ul');
-    ulSecondaryNav.setAttribute('huge-secondary-nav', '');
+    var ulSecondaryNav = utils.createElement('ul', {'huge-secondary-nav': ''}, null, rootEl);
 
     state.map(function (item) {
       renderSecondaryNavItem(item, ulSecondaryNav);
     });
-    
-    rootEl.appendChild(ulSecondaryNav);
   }
 
   function renderPrimaryNavItem(state, rootEl) {
-    var liElement = document.createElement('li');
-    liElement.setAttribute('huge-nav-item', '');
+    var liElement = utils.createElement('li', {'huge-nav-item': ''}, null, rootEl);
 
-    var anchorElement = document.createElement('a');
-    anchorElement.setAttribute('href', state.url);
-    anchorElement.innerHTML = state.label;
-    liElement.appendChild(anchorElement);
+    var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
 
     renderSecondaryNav(state.items, liElement);
-
-    rootEl.appendChild(liElement);
   }
 
   function renderPrimaryNav(state, rootEl) {
@@ -210,15 +213,13 @@ window.hugeApp = (function (hugeApp, document) {
 
     //Handle re-render
     if(primaryNavHook.length === 0) {
-      primaryNavHook = document.createElement('huge-primary-nav');
-      rootEl.appendChild(primaryNavHook);
+      primaryNavHook = utils.createElement('huge-primary-nav', null, null, rootEl);
     } else {
       primaryNavHook = primaryNavHook[0];
     }
 
     if(!hamburgerOrCloseEl) {
-      hamburgerOrCloseEl = document.createElement('span');
-      hamburgerOrCloseEl.setAttribute('class', 'hamburger-close-nav');
+      hamburgerOrCloseEl = utils.createElement('span', {'class': 'hamburger-close-nav'}, null, rootEl);
       hamburgerOrCloseEl.onclick = function () {
         if(store.getState().navOpen === true) {
           store.dispatch(actions.closeNav());
@@ -226,24 +227,18 @@ window.hugeApp = (function (hugeApp, document) {
           store.dispatch(actions.openNav());
         }
       };
-      rootEl.appendChild(hamburgerOrCloseEl);
     }
 
 
+    var hugeLabel, footerEl;
     var ulPrimaryNav = document.querySelector('ul[huge-primary-nav]');
     //TODO: Refactor this approach, this isn't optimal
     if(!ulPrimaryNav) { //Static elements, no need to re-render
-      var hugeLabel = document.createElement('h1');
-      hugeLabel.innerHTML = 'HUGE';
-      primaryNavHook.appendChild(hugeLabel);
+      hugeLabel = utils.createElement('h1', null, 'HUGE', primaryNavHook);
 
-      ulPrimaryNav = document.createElement('ul');
-      ulPrimaryNav.setAttribute('huge-primary-nav', '');
-      primaryNavHook.appendChild(ulPrimaryNav);
+      ulPrimaryNav = utils.createElement('ul', {'huge-primary-nav': ''}, null, primaryNavHook);
 
-      var footerEl = document.createElement('footer');
-      footerEl.innerHTML = '&copy; 2016 Huge. All Rights Reserved.';
-      primaryNavHook.appendChild(footerEl);
+      footerEl = utils.createElement('footer', null, '&copy; 2016 Huge. All Rights Reserved.', primaryNavHook);
     }
 
     state.navItems.map(function (item) {

@@ -136,25 +136,16 @@ huge-primary-nav > h1 {
 
   [huge-nav] footer {
     color: black;
+    background: white;
     position: absolute;
     bottom: 0px;
     z-index: 100;
-    margin-left: 24px;
-    font-size: 12px;
-  }
-
-  /**
-  [huge-nav] .hamburger-close-nav {
-    display: inline-block;
-    float: right;
-    cursor: pointer;
-    margin: 0px;
-    line-height: 60px; /** $navbar-height **//**
     padding-left: 24px;
-    padding-right: 24px;
-    font-size: 21px;
+    padding-bottom: 17px;
+    padding-top: 17px;
+    font-size: 12px;
+    display: block;
   }
-  **/
 
   [huge-nav] .chevron {
     display: block;
@@ -181,6 +172,7 @@ huge-primary-nav > h1 {
     bottom: 0;
     padding-left: 0;
     padding-top: 12px;
+    overflow-y: scroll;
   }
 
   [huge-nav] huge-primary-nav {
