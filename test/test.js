@@ -330,7 +330,6 @@ describe('hugeApp', function() {
         expect(actionsObj.closeNav()).is.deep.equal(navCloseAction);
       });
 
-      /**
       it('which has a nav items loaded action and action creator', function () {
         expect(actionsObj.NAV_ITEMS_LOADED).to.be.defined;
         expect(actionsObj.loadNavItems).is.a('function');
@@ -340,12 +339,10 @@ describe('hugeApp', function() {
           navItems: fakeNavAPIResponse.items
         };
         var navItemsAction = actionsObj.loadNavItems();
-        console.log(navItemsAction);
         requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse));
 
-        expect(navItemsAction).is.deep.equal(navItemsLoadedAction);
+        return expect(navItemsAction).to.eventually.deep.equal(navItemsLoadedAction);
       });
-      **/
 
     });
   });
