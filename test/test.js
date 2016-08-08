@@ -284,7 +284,69 @@ describe('hugeApp', function() {
 
   describe('actions', function() {
     it('should be defined', function() {
-      expect(hugeApp.actions).to.not.be.undefined;
+      expect(hugeApp.actions).to.be.defined;
+    });
+
+    describe('should return an actions object', function () {
+      var actionsObj;
+      beforeEach(function () {
+        actionsObj = hugeApp.actions(hugeApp, xhr);
+      });
+
+      it('which has a viewport change action and action creator', function () {
+        //Sadly we have no way other way of verifying that there IS in fact
+        //a way to trigger a viewport_change other than to hardcode this.
+        //Maybe in future we can refactor this test
+        expect(actionsObj.VIEWPORT_CHANGE).to.be.defined;
+        expect(actionsObj.changeViewport).is.a('function');
+
+        var viewportChangeAction = {
+          type: actionsObj.VIEWPORT_CHANGE,
+          viewportType: 'NARROW'
+        };
+
+        expect(actionsObj.changeViewport('NARROW')).is.deep.equal(viewportChangeAction);
+      });
+
+      it('which has a nav open action and action creator', function () {
+        expect(actionsObj.NAV_OPEN).to.be.defined;
+        expect(actionsObj.openNav).is.a('function');
+
+        var navOpenAction = {
+          type: actionsObj.NAV_OPEN
+        };
+
+        expect(actionsObj.openNav()).is.deep.equal(navOpenAction);
+      });
+
+      it('which has a nav close action and action creator', function () {
+        expect(actionsObj.NAV_CLOSE).to.be.defined;
+        expect(actionsObj.closeNav).is.a('function');
+
+        var navCloseAction = {
+          type: actionsObj.NAV_CLOSE
+        };
+
+        expect(actionsObj.closeNav()).is.deep.equal(navCloseAction);
+      });
+
+      /**
+      it('which has a nav items loaded action and action creator', function () {
+        expect(actionsObj.NAV_ITEMS_LOADED).to.be.defined;
+        expect(actionsObj.loadNavItems).is.a('function');
+
+        var navItemsLoadedAction = {
+          type: actionsObj.NAV_ITEMS_LOADED,
+          navItems: fakeNavAPIResponse.items
+        };
+        var navItemsAction = actionsObj.loadNavItems();
+        console.log(navItemsAction);
+        requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse));
+
+        expect(navItemsAction).is.deep.equal(navItemsLoadedAction);
+      });
+      **/
+
     });
   });
 
