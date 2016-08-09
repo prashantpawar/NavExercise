@@ -251,7 +251,7 @@ huge-primary-nav > h1 {
 
   [huge-nav] .hamburger-close-nav {
     top: calc(20px + 8px);
-    left: 24px;
+    right: calc(100% - 48px);
   }
 
   [huge-nav] .hamburger-close-nav:before {
@@ -268,7 +268,7 @@ huge-primary-nav > h1 {
 
   [huge-nav][nav-open] .hamburger-close-nav {
     background-color: transparent;
-    left: calc(100% - 60px);
+    right: 24px;
   }
 
   [huge-nav][nav-open] .hamburger-close-nav:before, [huge-nav][nav-open] .hamburger-close-nav:after {
