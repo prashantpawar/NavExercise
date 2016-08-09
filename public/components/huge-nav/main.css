@@ -216,8 +216,12 @@ huge-primary-nav > h1 {
     margin-left: 0;
     width: 100%;
   }
-  [huge-nav] [huge-nav-item][active] {
+
+  [huge-nav] [huge-nav-item]:hover > a,
+  [huge-nav] [huge-nav-item][active] > a {
+    background: #eee;
   }
+
 
   [huge-nav] [huge-nav-item][active] .chevron {
     transform: rotate(-90deg);

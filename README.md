@@ -81,30 +81,30 @@ Measurements are specified in pixels. Dimensions are fluid unless specified.
 
 #### Desktop
 
-* On hover, Primary Navigation reverses color (white/magenta).
-* On click, if item contains a URL, Primary Navigation navigates to a new page.
-* On click, if item contains other items, Secondary Navigation appears (see Desktop, Secondary Navigation).
-* Menu appears containing Secondary Navigation.
-* Translucent mask appears over content, behind menu.
-* On hover in, Secondary Navigation changes color (magenta/light gray).
-* On click, Secondary navigates to a new page.
-* On click outside of menu, menu and mask are hidden.
++ On hover, Primary Navigation reverses color (white/magenta).
++ On click, if item contains a URL, Primary Navigation navigates to a new page.
++ On click, if item contains other items, Secondary Navigation appears (see Desktop, Secondary Navigation).
++ Menu appears containing Secondary Navigation.
++ Translucent mask appears over content, behind menu.
++ On hover in, Secondary Navigation changes color (magenta/light gray).
++ On click, Secondary navigates to a new page.
++ On click outside of menu, menu and mask are hidden.
 
 #### Mobile
 
-* When a user clicks the open navigation icon (“hamburger”), the navigation should “push” from left to right.
-* The HUGE logo and navigation toggle slide left to right.
-* The open navigation icon should change to the close navigation icon (“x”).
-* Translucent mask appears over content, right of navigation.
-* The Primary Navigation should include link items and menu items.
-* When a user hovers a Primary Navigation item, it should change color (magenta/light gray).
-* When a user clicks a Primary Navigation link item, the browser should navigate to a new page.
-* When a user clicks a Primary Navigation menu item, the Secondary Navigation should “push” down, the chevron should rotate * 180°.
-* When a user hovers a Secondary Navigation item, it should change color (magenta/light gray).
-* When a user clicks a Secondary Navigation item, browser should navigate to a new page.
-* When a user clicks outside of the navigation, the navigation should close.
-* When the navigation closes:
-  * the menu should “pull” from right to left
-  * the logo and toggle button should “slide” from right to left
-  * the close icon should change to the open icon
-  * the mask should be hidden
++ When a user clicks the open navigation icon (“hamburger”), the navigation should “push” from left to right.
++ The HUGE logo and navigation toggle slide left to right.
++ The open navigation icon should change to the close navigation icon (“x”).
++ Translucent mask appears over content, right of navigation.
++ The Primary Navigation should include link items and menu items.
++ When a user hovers a Primary Navigation item, it should change color (magenta/light gray).
++ When a user clicks a Primary Navigation link item, the browser should navigate to a new page.
++ When a user clicks a Primary Navigation menu item, the Secondary Navigation should “push” down, the chevron should rotate * 180°.
++ When a user hovers a Secondary Navigation item, it should change color (magenta/light gray).
++ When a user clicks a Secondary Navigation item, browser should navigate to a new page.
++ When a user clicks outside of the navigation, the navigation should close.
++ When the navigation closes:
+  + the menu should “pull” from right to left
+  + the logo and toggle button should “slide” from right to left
+  + the close icon should change to the open icon
+  + the mask should be hidden

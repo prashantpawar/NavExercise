@@ -13,7 +13,7 @@
   },
   "private": true,
   "scripts": {
-    "test": "mocha",
+    "test": "echo 'Please open test/index.html in Chrome to run the tests'",
     "start": "node ./bin/www"
   },
   "dependencies": {
