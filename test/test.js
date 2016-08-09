@@ -306,6 +306,7 @@ describe('hugeApp', function() {
       //Store object must have getState, dispatch, and subscribe methods(at
       //least) for the Redux pattern
       var storeObj, mockReducer, mockStateObj;
+      var mockActionObj, createdStoreObj;
       beforeEach(function () {
         storeObj = Object.assign({}, hugeApp.store, {});
         mockStateObj = {
@@ -313,34 +314,24 @@ describe('hugeApp', function() {
           viewportType: 'WIDE',
           navItems: []
         };
+
+        actionsObj = hugeApp.actions(hugeApp, xhr);
+        mockActionObj = {
+          type: actionsObj.VIEWPORT_CHANGE,
+        viewportType: actionsObj.ViewportTypes.NARROW
+        };
+        mockReducer = sandbox.stub().returns(mockStateObj);
+        createdStoreObj = storeObj.createStore(mockReducer);
       });
 
       it('which has a getState() method', function () {
-        mockReducer = sandbox.stub().returns(mockStateObj);
-        var createdStoreObj = storeObj.createStore(mockReducer);
-
         expect(createdStoreObj.getState).to.be.defined;
         expect(createdStoreObj.getState).to.be.a('function');
 
         expect(createdStoreObj.getState()).to.deep.equal(mockStateObj);
       });
 
-      describe('which allows you to dispatche an action', function () {
-        var mockActionObj, createdStoreObj;
-        beforeEach(function () {
-          actionsObj = hugeApp.actions(hugeApp, xhr);
-          mockActionObj = {
-            type: actionsObj.VIEWPORT_CHANGE,
-            viewportType: actionsObj.ViewportTypes.NARROW
-          };
-          mockReducer = sandbox.stub().returns(mockStateObj);
-          createdStoreObj = storeObj.createStore(mockReducer);
-        });
-
-        afterEach(function () {
-            
-        });
-
+      describe('which allows you to dispatch an action', function () {
         it('provided as a value', function () {
           createdStoreObj.dispatch(mockActionObj);
 
@@ -361,6 +352,11 @@ describe('hugeApp', function() {
       });
 
       it('which allows you to subscribe to any store changing events', function () {
+        var callbackSpy = sandbox.spy();
+        createdStoreObj.subscribe(callbackSpy);
+
+        createdStoreObj.dispatch(mockActionObj);
+        expect(callbackSpy.called).to.be.true;
       });
     });
   });
