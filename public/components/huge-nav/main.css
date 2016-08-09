@@ -9,6 +9,15 @@
   height: 60px; /** def $navbar-height **/
 }
 
+.film {
+  position: absolute;
+  top: 60px; /** $navbar-height **/
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(0,0,0, 0.5);
+}
+
 [huge-nav] a {
   color: #fff;
   text-decoration: none;
@@ -36,21 +45,24 @@
   float: left;
   margin-left: -5px;
   overflow: visible;
-  padding: 20px 24px;
   position: relative;
 }
 
-[huge-nav] [huge-nav-item]:hover {
+[huge-nav] [huge-nav-item]:hover,
+[huge-nav] [huge-nav-item][active] {
   background: white;
   color: #ec008c;
 }
 
 [huge-nav] [huge-nav-item] > a {
+  display: block;
   font-size: 21px;
   font-family: HUGEAvantGardeBold;
+  padding: 20px 24px;
 }
 
-[huge-nav] [huge-nav-item]:hover > a {
+[huge-nav] [huge-nav-item]:hover > a,
+[huge-nav] [huge-nav-item][active] > a {
   background: white;
   color: #ec008c;
 }
@@ -105,16 +117,20 @@ huge-primary-nav > h1 {
   z-index: 10;
 }
 
-[huge-nav-item]:hover [huge-secondary-nav] {
+[huge-nav-item][active] [huge-secondary-nav] {
   visibility: visible;
 }
 
 [huge-secondary-nav] a {
   color: black;
-  padding: 12px 24px;
+  display: block;
+  line-height: 48px;
+  padding: 0 24px;
+  width: 100%;
 }
 
 [huge-secondary-nav] li {
+  cursor: pointer;
   display: block;
   height: 48px;
   white-space: nowrap;
@@ -198,19 +214,23 @@ huge-primary-nav > h1 {
   [huge-nav] [huge-nav-item] {
     display: block;
     margin-left: 0;
-    padding: 12px 0;
     width: 100%;
   }
-  [huge-nav] [huge-nav-item]:hover {
+
+  [huge-nav] [huge-nav-item]:hover > a,
+  [huge-nav] [huge-nav-item][active] > a {
+    background: #eee;
   }
 
-  [huge-nav] [huge-nav-item]:hover .chevron {
+
+  [huge-nav] [huge-nav-item][active] .chevron {
     transform: rotate(-90deg);
   }
 
   [huge-nav] [huge-nav-item] > a {
     color: black;
     display: block;
+    padding: 12px 0;
     padding-left: 24px;
     padding-right: 12px;
   }
@@ -221,21 +241,16 @@ huge-primary-nav > h1 {
     position: static;
   }
 
-  [huge-nav] [huge-secondary-nav] li {
+  [huge-nav] [huge-secondary-nav] a {
     padding-left: 24px;
     padding-right: 24px;
   }
 
-  [huge-nav] [huge-secondary-nav] a {
-    padding-left: 0;
-  }
-
-  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] {
+  [huge-nav] [huge-nav-item][active] [huge-secondary-nav] {
     height: auto;
   }
 
-  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] li:first-of-type {
-    margin-top: 12px;
+  [huge-nav] [huge-nav-item][active] [huge-secondary-nav] li:first-of-type {
   }
 
   /**
@@ -319,6 +334,6 @@ huge-primary-nav > h1 {
 
 @media only screen and (max-width:768px){
   [huge-nav] [huge-nav-item] {
-    margin-left: -5px;
+    margin-left: 0px;
   }
 }

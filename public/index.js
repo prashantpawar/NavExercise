@@ -67,6 +67,8 @@ window.hugeApp.store = (function () {
 window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   var NAV_OPEN = 'NAV_OPEN';
   var NAV_CLOSE = 'NAV_CLOSE';
+  var SHOW_SUBNAV = 'SHOW_SUBNAV';
+  var CLEAR_SUBNAV = 'CLEAR_SUBNAV';
   var NAV_TRANSFORMATION_END = 'NAV_TRANSFORMATION_END';
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
   var NAV_ITEMS_LOADED = 'NAV_ITEMS_LOADED';
@@ -92,6 +94,19 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
     return {
       type: NAV_CLOSE
     }
+  }
+
+  function showSubnav(activeSubnav) {
+      return {
+        type: SHOW_SUBNAV,
+        activeSubnav: activeSubnav
+      }
+  }
+
+  function clearSubnav() {
+      return {
+        type: CLEAR_SUBNAV
+      }
   }
 
   function navTransformationEnd() {
@@ -124,6 +139,8 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
     VIEWPORT_CHANGE: VIEWPORT_CHANGE,
     NAV_OPEN: NAV_OPEN,
     NAV_CLOSE: NAV_CLOSE,
+    CLEAR_SUBNAV: CLEAR_SUBNAV,
+    SHOW_SUBNAV: SHOW_SUBNAV,
     NAV_TRANSFORMATION_END: NAV_TRANSFORMATION_END,
     NAV_ITEMS_LOADED: NAV_ITEMS_LOADED,
 
@@ -140,6 +157,8 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
     **/
     openNav: openNav,
     closeNav: closeNav,
+    showSubnav: showSubnav,
+    clearSubnav: clearSubnav,
     navTransformationEnd: navTransformationEnd,
     changeViewport: changeViewport,
     loadNavItems: loadNavItems
@@ -152,6 +171,7 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
 
   var initialState = {
     navOpen: false,
+    activeSubnav: null, 
     navTransforming: false,
     viewportType: ViewportTypes.WIDE,
     navItems: []
@@ -182,6 +202,16 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
             navOpen: false,
             navTransforming: true
           });
+        case actions.SHOW_SUBNAV:
+          return Object.assign({}, state, {
+            activeSubnav: action.activeSubnav
+          });
+        case actions.CLEAR_SUBNAV:
+          return Object.assign({}, state, {
+            activeSubnav: null,
+            navOpen: false,
+            navTransforming: true
+          });
         case actions.VIEWPORT_CHANGE:
           return Object.assign({}, state, {
             viewportType: action.viewportType
@@ -207,10 +237,14 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     var liElement = document.createElement('li');
 
     var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
+    liElement.addEventListener('click', function (e) {
+      store.dispatch(actions.clearSubnav());
+    }, {
+      once: true
+    });
 
     rootEl.appendChild(liElement);
   }
-  constructor
   function renderSecondaryNav(state, rootEl) {
     var ulSecondaryNav = utils.createElement('ul', {'huge-secondary-nav': ''}, null, rootEl);
 
@@ -219,16 +253,38 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     });
   }
 
-  function renderPrimaryNavItem(state, rootEl) {
+  function renderPrimaryNavItem(state, rootEl, activeSubnav) {
     var liElement = utils.createElement('li', {'huge-nav-item': ''}, null, rootEl);
 
-    var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
+    var navLabal;
+    if(state.items.length > 0) {
+      navLabel = utils.createElement('a', null, state.label, liElement);
+      liElement.addEventListener('click', function (e) {
+        if(e.target.href === '') {
+          store.dispatch(actions.showSubnav(state));
+        }
+      }, {
+        once: true
+      });
+
+      if(state === activeSubnav) {
+        liElement.setAttribute('active', '');
+      } else {
+        liElement.removeAttribute('active');
+      }
+
+      utils.createElement('span', {'class': 'chevron'}, null, navLabel);
+    } else {
+      navLabel = utils.createElement('a', {'href': state.url}, state.label, liElement);
+      liElement.addEventListener('click', function (e) {
+        if(e.target.href !== '') {
+          store.dispatch(actions.clearSubnav());
+        }
+      });
+    }
 
     renderSecondaryNav(state.items, liElement);
 
-    if(state.items.length > 0) {
-      utils.createElement('span', {'class': 'chevron'}, null, anchorElement);
-    }
   }
 
   function renderPrimaryNav(state, rootEl) {
@@ -268,7 +324,7 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     utils.removeAllChildElements(ulPrimaryNav);
 
     state.navItems.map(function (item) {
-      renderPrimaryNavItem(item, ulPrimaryNav);
+      renderPrimaryNavItem(item, ulPrimaryNav, state.activeSubnav);
     });
   }
 
@@ -283,7 +339,6 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
       rootEl.setAttribute('nav-transforming', '');
       rootEl.addEventListener('transitionend', function (event) {
         if(event.propertyName === 'transform' && event.srcElement.classList.contains('chevron') === false) {
-          console.log('dispatching transitionend', event);
           store.dispatch(actions.navTransformationEnd());
         }
       }, {
@@ -308,12 +363,31 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     renderNavEnhancements(state, navNode);
   }
 
+  function renderMain(state, rootEl) {
+    var filmElement = rootEl.querySelector('div.film');
+
+    if((state.navOpen === false && state.activeSubnav) ||
+       (state.navOpen === true)) {
+      if(!filmElement) {
+        filmElement = utils.createElement('div', {'class': 'film'}, null, rootEl);
+        filmElement.addEventListener('click', function (e) {
+          store.dispatch(actions.clearSubnav());
+        });
+      }
+    } else {
+      if(filmElement) {
+        rootEl.removeChild(filmElement);
+      }
+    }
+  }
+
   function render(state, rootEl) {
     if(typeof rootEl === 'undefined') {
       rootEl = document.getElementById('root');
     }
 
     renderNav(state, rootEl);
+    renderMain(state, rootEl);
   }
 
   function initApp() {
