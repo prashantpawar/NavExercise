@@ -235,6 +235,11 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     var liElement = document.createElement('li');
 
     var anchorElement = utils.createElement('a', {'href': state.url}, state.label, liElement);
+    liElement.addEventListener('click', function (e) {
+      store.dispatch(actions.clearSubnav());
+    }, {
+      once: true
+    });
 
     rootEl.appendChild(liElement);
   }
@@ -252,8 +257,9 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     var navLabal;
     if(state.items.length > 0) {
       navLabel = utils.createElement('a', null, state.label, liElement);
-      liElement.addEventListener('click', function () {
-        store.dispatch(actions.showSubnav(state));
+      liElement.addEventListener('click', function (e) {
+        if(e.target.href === '')
+          store.dispatch(actions.showSubnav(state));
       }, {
         once: true
       });

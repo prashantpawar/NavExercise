@@ -45,7 +45,6 @@
   float: left;
   margin-left: -5px;
   overflow: visible;
-  padding: 20px 24px;
   position: relative;
 }
 
@@ -56,8 +55,10 @@
 }
 
 [huge-nav] [huge-nav-item] > a {
+  display: block;
   font-size: 21px;
   font-family: HUGEAvantGardeBold;
+  padding: 20px 24px;
 }
 
 [huge-nav] [huge-nav-item]:hover > a,
@@ -122,10 +123,14 @@ huge-primary-nav > h1 {
 
 [huge-secondary-nav] a {
   color: black;
-  padding: 12px 24px;
+  display: block;
+  line-height: 48px;
+  padding: 0 24px;
+  width: 100%;
 }
 
 [huge-secondary-nav] li {
+  cursor: pointer;
   display: block;
   height: 48px;
   white-space: nowrap;
