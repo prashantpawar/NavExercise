@@ -4,6 +4,7 @@ huge-leader {
   height: 80vh;
   display: block;
   background: lightblue;
+  position: relative;
 }
 
 huge-leader h1 {
@@ -22,6 +23,13 @@ huge-leader h1 {
   huge-leader h1 {
       font-size: 44px;
       line-height: 49px;
+    }
+}
+
+@media only screen and (min-width:1017px) and (max-width:1384px){
+  huge-leader h1 {
+      font-size: 100px;
+      line-height: 120px;
     }
 }
 

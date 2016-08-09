@@ -67,6 +67,7 @@ window.hugeApp.store = (function () {
 window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   var NAV_OPEN = 'NAV_OPEN';
   var NAV_CLOSE = 'NAV_CLOSE';
+  var NAV_TRANSFORMATION_END = 'NAV_TRANSFORMATION_END';
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
   var NAV_ITEMS_LOADED = 'NAV_ITEMS_LOADED';
   
@@ -90,6 +91,12 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   function closeNav() {
     return {
       type: NAV_CLOSE
+    }
+  }
+
+  function navTransformationEnd() {
+    return {
+      type: NAV_TRANSFORMATION_END
     }
   }
 
@@ -117,6 +124,7 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
     VIEWPORT_CHANGE: VIEWPORT_CHANGE,
     NAV_OPEN: NAV_OPEN,
     NAV_CLOSE: NAV_CLOSE,
+    NAV_TRANSFORMATION_END: NAV_TRANSFORMATION_END,
     NAV_ITEMS_LOADED: NAV_ITEMS_LOADED,
 
     /**
@@ -132,6 +140,7 @@ window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
     **/
     openNav: openNav,
     closeNav: closeNav,
+    navTransformationEnd: navTransformationEnd,
     changeViewport: changeViewport,
     loadNavItems: loadNavItems
   }
@@ -143,6 +152,7 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
 
   var initialState = {
     navOpen: false,
+    navTransforming: false,
     viewportType: ViewportTypes.WIDE,
     navItems: []
   };
@@ -158,13 +168,19 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
       }
 
       switch(action.type) {
+        case actions.NAV_TRANSFORMATION_END:
+          return Object.assign({}, state, {
+            navTransforming: false
+          });
         case actions.NAV_OPEN:
           return Object.assign({}, state, {
-            navOpen: true
+            navOpen: true,
+            navTransforming: true
           });
         case actions.NAV_CLOSE:
           return Object.assign({}, state, {
-            navOpen: false
+            navOpen: false,
+            navTransforming: true
           });
         case actions.VIEWPORT_CHANGE:
           return Object.assign({}, state, {
@@ -263,6 +279,19 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
       rootEl.removeAttribute('hamburger-menu');
     }
 
+    if(state.navTransforming === true) {
+      rootEl.setAttribute('nav-transforming', '');
+      rootEl.addEventListener('transitionend', function (event) {
+        if(event.propertyName === 'transform' && event.srcElement.classList.contains('chevron') === false) {
+          console.log('dispatching transitionend', event);
+          store.dispatch(actions.navTransformationEnd());
+        }
+      }, {
+        once: true
+      });
+    } else {
+      rootEl.removeAttribute('nav-transforming');
+    }
     if(state.navOpen === true) {
       rootEl.setAttribute('nav-open', '');
       rootEl.removeAttribute('nav-close');
@@ -288,7 +317,8 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
   }
 
   function initApp() {
-    document.getElementById('root').removeAttribute('class');
+    var rootEl = document.getElementById('root');
+    rootEl.removeAttribute('class');
     /**
      * SETUP
      **/

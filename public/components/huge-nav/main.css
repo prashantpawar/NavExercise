@@ -19,6 +19,7 @@
   margin: 0;
   position: relative;
   z-index: 100;
+  transition: none;
 }
 
 [huge-nav] [huge-primary-nav] {
@@ -179,17 +180,19 @@ huge-primary-nav > h1 {
     z-index: 100;
   }
 
-  [huge-nav] huge-primary-nav, [huge-nav][nav-close] huge-primary-nav {
+  [huge-nav] huge-primary-nav {
     transform: translate(-100%, 0);
   }
 
-  [huge-nav][nav-close] huge-primary-nav {
+  [huge-nav][nav-open][nav-transforming] huge-primary-nav,
+  [huge-nav][nav-open][nav-transforming] .hamburger-close-nav,
+  [huge-nav][nav-close][nav-transforming] huge-primary-nav,
+  [huge-nav][nav-close][nav-transforming] .hamburger-close-nav {
     transition: all 500ms ease-in-out;
   }
 
   [huge-nav][nav-open] huge-primary-nav {
     transform: translate(0, 0);
-    transition: all 500ms ease-in-out;
   }
 
   [huge-nav] [huge-nav-item] {

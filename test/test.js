@@ -153,12 +153,14 @@ describe('hugeApp', function() {
         it('NAV_OPEN action', function () {
           var oldState = {
             navOpen: false,
+            navTransforming: false,
             viewportType: actions.ViewportTypes.WIDE,
             navItems: []
           };
           var newState = {
             navOpen: true,
             viewportType: actions.ViewportTypes.WIDE,
+            navTransforming: true,
             navItems: []
           };
 
@@ -171,11 +173,13 @@ describe('hugeApp', function() {
         it('NAV_CLOSE action', function () {
           var oldState = {
             navOpen: true,
+            navTransforming: false,
             viewportType: actions.ViewportTypes.WIDE,
             navItems: []
           };
           var newState = {
             navOpen: false,
+            navTransforming: true,
             viewportType: actions.ViewportTypes.WIDE,
             navItems: []
           };
