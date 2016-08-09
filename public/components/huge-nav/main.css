@@ -9,6 +9,15 @@
   height: 60px; /** def $navbar-height **/
 }
 
+.film {
+  position: absolute;
+  top: 60px; /** $navbar-height **/
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(0,0,0, 0.5);
+}
+
 [huge-nav] a {
   color: #fff;
   text-decoration: none;
@@ -40,7 +49,8 @@
   position: relative;
 }
 
-[huge-nav] [huge-nav-item]:hover {
+[huge-nav] [huge-nav-item]:hover,
+[huge-nav] [huge-nav-item][active] {
   background: white;
   color: #ec008c;
 }
@@ -50,7 +60,8 @@
   font-family: HUGEAvantGardeBold;
 }
 
-[huge-nav] [huge-nav-item]:hover > a {
+[huge-nav] [huge-nav-item]:hover > a,
+[huge-nav] [huge-nav-item][active] > a {
   background: white;
   color: #ec008c;
 }
@@ -105,7 +116,7 @@ huge-primary-nav > h1 {
   z-index: 10;
 }
 
-[huge-nav-item]:hover [huge-secondary-nav] {
+[huge-nav-item][active] [huge-secondary-nav] {
   visibility: visible;
 }
 
@@ -201,10 +212,10 @@ huge-primary-nav > h1 {
     padding: 12px 0;
     width: 100%;
   }
-  [huge-nav] [huge-nav-item]:hover {
+  [huge-nav] [huge-nav-item][active] {
   }
 
-  [huge-nav] [huge-nav-item]:hover .chevron {
+  [huge-nav] [huge-nav-item][active] .chevron {
     transform: rotate(-90deg);
   }
 
@@ -230,11 +241,11 @@ huge-primary-nav > h1 {
     padding-left: 0;
   }
 
-  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] {
+  [huge-nav] [huge-nav-item][active] [huge-secondary-nav] {
     height: auto;
   }
 
-  [huge-nav] [huge-nav-item]:hover [huge-secondary-nav] li:first-of-type {
+  [huge-nav] [huge-nav-item][active] [huge-secondary-nav] li:first-of-type {
     margin-top: 12px;
   }
 
