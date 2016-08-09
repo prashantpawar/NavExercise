@@ -1,5 +1,3 @@
-console.log("index.js loaded");
-
 window.hugeApp = {};
 
 window.hugeApp.utils = (function (hugeApp, document) {
@@ -29,7 +27,7 @@ window.hugeApp.utils = (function (hugeApp, document) {
   }
 })(window.hugeApp, document);
 
-window.hugeApp.store = (function (hugeApp) {
+window.hugeApp.store = (function () {
   var callbacks = [];
   var state;
   function createStore(reducer) {
@@ -42,18 +40,18 @@ window.hugeApp.store = (function (hugeApp) {
         var that = this;
         state = reducer(that.getState(), action);
 
-        callbacks.map(function (cb) {
+        return callbacks.map(function (cb) {
           cb(state); 
         });
       },
       dispatch: function (action) {
         var that = this;
         if(typeof action.then === 'function') {
-          action.then(function (resolvedAction) {
-              that.dispatchWithVal(resolvedAction);
+          return action.then(function (resolvedAction) {
+            return that.dispatchWithVal(resolvedAction);
           });
         } else {
-            that.dispatchWithVal(action);
+          return that.dispatchWithVal(action);
         }
       },
       subscribe: function (cb) {
@@ -64,9 +62,9 @@ window.hugeApp.store = (function (hugeApp) {
   return {
     createStore: createStore
   };
-})(window.hugeApp);
+})();
 
-window.hugeApp.actions = (function (hugeApp) {
+window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   var NAV_OPEN = 'NAV_OPEN';
   var NAV_CLOSE = 'NAV_CLOSE';
   var VIEWPORT_CHANGE = 'VIEWPORT_CHANGE';
@@ -137,10 +135,10 @@ window.hugeApp.actions = (function (hugeApp) {
     changeViewport: changeViewport,
     loadNavItems: loadNavItems
   }
-}(window.hugeApp));
+};
 
-window.hugeApp.reducers = (function (hugeApp) {
-  var actions = hugeApp.actions;
+window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
+  var actions = hugeApp.actions(hugeApp, XMLHttpRequest);;
   var ViewportTypes = actions.ViewportTypes;
 
   var initialState = {
@@ -181,11 +179,11 @@ window.hugeApp.reducers = (function (hugeApp) {
       }
     }
   };
-})(window.hugeApp);
+};
 
-window.hugeApp = (function (hugeApp, document) {
-  var actions = hugeApp.actions;
-  var reducers = hugeApp.reducers;
+window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
+  var actions = hugeApp.actions(hugeApp, XMLHttpRequest);
+  var reducers = hugeApp.reducers(hugeApp, XMLHttpRequest);
   var createStore = hugeApp.store.createStore;
   var utils = hugeApp.utils;
 
@@ -196,7 +194,7 @@ window.hugeApp = (function (hugeApp, document) {
 
     rootEl.appendChild(liElement);
   }
-
+  constructor
   function renderSecondaryNav(state, rootEl) {
     var ulSecondaryNav = utils.createElement('ul', {'huge-secondary-nav': ''}, null, rootEl);
 
@@ -285,13 +283,11 @@ window.hugeApp = (function (hugeApp, document) {
     if(typeof rootEl === 'undefined') {
       rootEl = document.getElementById('root');
     }
-    console.log('rendering');
 
     renderNav(state, rootEl);
   }
 
   function initApp() {
-    console.log("app being initialized", hugeApp);
     document.getElementById('root').removeAttribute('class');
     /**
      * SETUP
@@ -311,8 +307,14 @@ window.hugeApp = (function (hugeApp, document) {
 
   return Object.assign({}, hugeApp, {
     initApp: initApp,
+    //Exposing these methods for easier testing
+    renderSecondaryNavItem: renderSecondaryNavItem,
+    renderSecondaryNav: renderSecondaryNav,
+    renderPrimaryNavItem: renderPrimaryNavItem,
+    renderPrimaryNav, renderPrimaryNav,
+    renderNavEnhancements: renderNavEnhancements,
+    renderNav: renderNav,
+    render: render,
     registerElement: registerElement
   });
-}(window.hugeApp, document));
-
-document.addEventListener('DOMContentLoaded', hugeApp.initApp);
+};
