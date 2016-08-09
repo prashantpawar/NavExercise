@@ -214,7 +214,6 @@ huge-primary-nav > h1 {
   [huge-nav] [huge-nav-item] {
     display: block;
     margin-left: 0;
-    padding: 12px 0;
     width: 100%;
   }
   [huge-nav] [huge-nav-item][active] {
@@ -227,6 +226,7 @@ huge-primary-nav > h1 {
   [huge-nav] [huge-nav-item] > a {
     color: black;
     display: block;
+    padding: 12px 0;
     padding-left: 24px;
     padding-right: 12px;
   }
@@ -237,13 +237,9 @@ huge-primary-nav > h1 {
     position: static;
   }
 
-  [huge-nav] [huge-secondary-nav] li {
+  [huge-nav] [huge-secondary-nav] a {
     padding-left: 24px;
     padding-right: 24px;
-  }
-
-  [huge-nav] [huge-secondary-nav] a {
-    padding-left: 0;
   }
 
   [huge-nav] [huge-nav-item][active] [huge-secondary-nav] {
@@ -251,7 +247,6 @@ huge-primary-nav > h1 {
   }
 
   [huge-nav] [huge-nav-item][active] [huge-secondary-nav] li:first-of-type {
-    margin-top: 12px;
   }
 
   /**
@@ -335,6 +330,6 @@ huge-primary-nav > h1 {
 
 @media only screen and (max-width:768px){
   [huge-nav] [huge-nav-item] {
-    margin-left: -5px;
+    margin-left: 0px;
   }
 }

@@ -208,7 +208,9 @@ window.hugeApp.reducers = function (hugeApp, XMLHttpRequest) {
           });
         case actions.CLEAR_SUBNAV:
           return Object.assign({}, state, {
-            activeSubnav: null
+            activeSubnav: null,
+            navOpen: false,
+            navTransforming: true
           });
         case actions.VIEWPORT_CHANGE:
           return Object.assign({}, state, {
@@ -258,8 +260,9 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
     if(state.items.length > 0) {
       navLabel = utils.createElement('a', null, state.label, liElement);
       liElement.addEventListener('click', function (e) {
-        if(e.target.href === '')
+        if(e.target.href === '') {
           store.dispatch(actions.showSubnav(state));
+        }
       }, {
         once: true
       });
@@ -273,6 +276,11 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
       utils.createElement('span', {'class': 'chevron'}, null, navLabel);
     } else {
       navLabel = utils.createElement('a', {'href': state.url}, state.label, liElement);
+      liElement.addEventListener('click', function (e) {
+        if(e.target.href !== '') {
+          store.dispatch(actions.clearSubnav());
+        }
+      });
     }
 
     renderSecondaryNav(state.items, liElement);
@@ -358,7 +366,8 @@ window.hugeAppConstructor = function (hugeApp, document, XMLHttpRequest) {
   function renderMain(state, rootEl) {
     var filmElement = rootEl.querySelector('div.film');
 
-    if(state.activeSubnav) {
+    if((state.navOpen === false && state.activeSubnav) ||
+       (state.navOpen === true)) {
       if(!filmElement) {
         filmElement = utils.createElement('div', {'class': 'film'}, null, rootEl);
         filmElement.addEventListener('click', function (e) {
