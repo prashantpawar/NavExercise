@@ -115,57 +115,6 @@ describe('hugeApp', function() {
     utils.removeAllChildElements(fixture);
   });
 
-  describe('main module', function() {
-    it('should be defined', function() {
-      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
-      expect(hugeApp).to.be.defined;
-    });
-
-    it('should have an initialization method', function() {
-      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
-      expect(hugeApp.initApp).to.be.defined;
-    });
-
-    it('should remove preload class from the root element', function() {
-      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
-      hugeApp.initApp();
-
-      expect(appRootEl.classList.contains('preload')).to.be.false;
-    });
-
-    describe('should load nav items by', function () {
-      var ajaxURL = '/api/nav.json';
-      beforeEach(function () {
-        requests = [];
-      });
-
-      it('making an ajax call to ' + ajaxURL, function() {
-        hugeApp = hugeAppConstructor(hugeApp, document, xhr);
-        hugeApp.initApp();
-
-        expect(requests.length).to.equal(1);
-        expect(requests[0].url).to.equal(ajaxURL);
-      });
-
-      it('load Nav items from the API endpoint', function() {
-        mockStore = {
-          getState: sandbox.stub(),
-          subscribe: sandbox.stub(),
-          dispatch: sandbox.stub()
-        }
-        hugeApp.store.createStore = function () {
-          return mockStore;
-        };
-        hugeApp = hugeAppConstructor(hugeApp, document, xhr);
-
-        hugeApp.initApp();
-        requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse));
-
-        expect(mockStore.subscribe.called).to.be.true;
-      });
-    });
-  });
-
   describe('reducers module', function() {
     it('should be defined', function() {
       expect(hugeApp.reducers).to.not.be.undefined;
@@ -293,7 +242,7 @@ describe('hugeApp', function() {
         actionsObj = hugeApp.actions(hugeApp, xhr);
       });
 
-      it('which has a viewport change action and action creator', function () {
+      it('which has a viewport change action and its action creator', function () {
         //Sadly we have no way other way of verifying that there IS in fact
         //a way to trigger a viewport_change other than to hardcode this.
         //Maybe in future we can refactor this test
@@ -308,7 +257,7 @@ describe('hugeApp', function() {
         expect(actionsObj.changeViewport('NARROW')).is.deep.equal(viewportChangeAction);
       });
 
-      it('which has a nav open action and action creator', function () {
+      it('which has a nav open action and its action creator', function () {
         expect(actionsObj.NAV_OPEN).to.be.defined;
         expect(actionsObj.openNav).is.a('function');
 
@@ -319,7 +268,7 @@ describe('hugeApp', function() {
         expect(actionsObj.openNav()).is.deep.equal(navOpenAction);
       });
 
-      it('which has a nav close action and action creator', function () {
+      it('which has a nav close action and its action creator', function () {
         expect(actionsObj.NAV_CLOSE).to.be.defined;
         expect(actionsObj.closeNav).is.a('function');
 
@@ -330,7 +279,7 @@ describe('hugeApp', function() {
         expect(actionsObj.closeNav()).is.deep.equal(navCloseAction);
       });
 
-      it('which has a nav items loaded action and action creator', function () {
+      it('which has a nav items loaded action and its action creator', function () {
         expect(actionsObj.NAV_ITEMS_LOADED).to.be.defined;
         expect(actionsObj.loadNavItems).is.a('function');
 
@@ -349,7 +298,122 @@ describe('hugeApp', function() {
 
   describe('store', function() {
     it('should be defined', function() {
-      expect(hugeApp.store).to.not.be.undefined;
+      expect(hugeApp.store).to.be.defined;
+      expect(hugeApp.store.createStore).to.be.a('function');
+    });
+
+    describe('should return a store object', function () {
+      //Store object must have getState, dispatch, and subscribe methods(at
+      //least) for the Redux pattern
+      var storeObj, mockReducer, mockStateObj;
+      beforeEach(function () {
+        storeObj = Object.assign({}, hugeApp.store, {});
+        mockStateObj = {
+          navOpen: false,
+          viewportType: 'WIDE',
+          navItems: []
+        };
+      });
+
+      it('which has a getState() method', function () {
+        mockReducer = sandbox.stub().returns(mockStateObj);
+        var createdStoreObj = storeObj.createStore(mockReducer);
+
+        expect(createdStoreObj.getState).to.be.defined;
+        expect(createdStoreObj.getState).to.be.a('function');
+
+        expect(createdStoreObj.getState()).to.deep.equal(mockStateObj);
+      });
+
+      describe('which allows you to dispatche an action', function () {
+        var mockActionObj, createdStoreObj;
+        beforeEach(function () {
+          actionsObj = hugeApp.actions(hugeApp, xhr);
+          mockActionObj = {
+            type: actionsObj.VIEWPORT_CHANGE,
+            viewportType: actionsObj.ViewportTypes.NARROW
+          };
+          mockReducer = sandbox.stub().returns(mockStateObj);
+          createdStoreObj = storeObj.createStore(mockReducer);
+        });
+
+        afterEach(function () {
+            
+        });
+
+        it('provided as a value', function () {
+          createdStoreObj.dispatch(mockActionObj);
+
+          expect(mockReducer.called).to.true;
+          expect(mockReducer.calledWith(mockStateObj, mockActionObj)).to.be.true;
+        });
+
+        it('provided as a promise', function () {
+          return createdStoreObj.dispatch(
+            new Promise(function (resolve) {
+              resolve(mockActionObj);
+            })
+          ).then(function () {
+            expect(mockReducer.called).to.true;
+            expect(mockReducer.calledWith(mockStateObj, mockActionObj)).to.be.true;
+          });
+        });
+      });
+
+      it('which allows you to subscribe to any store changing events', function () {
+      });
     });
   });
+
+  describe('main module', function() {
+    it('should be defined', function() {
+      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
+      expect(hugeApp).to.be.defined;
+    });
+
+    it('should have an initialization method', function() {
+      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
+      expect(hugeApp.initApp).to.be.defined;
+    });
+
+    it('should remove preload class from the root element', function() {
+      hugeApp = hugeAppConstructor(hugeApp, document, xhr);
+      hugeApp.initApp();
+
+      expect(appRootEl.classList.contains('preload')).to.be.false;
+    });
+
+    describe('should load nav items by', function () {
+      var ajaxURL = '/api/nav.json';
+      beforeEach(function () {
+        requests = [];
+      });
+
+      it('making an ajax call to ' + ajaxURL, function() {
+        hugeApp = hugeAppConstructor(hugeApp, document, xhr);
+        hugeApp.initApp();
+
+        expect(requests.length).to.equal(1);
+        expect(requests[0].url).to.equal(ajaxURL);
+      });
+
+      it('load Nav items from the API endpoint', function() {
+        mockStore = {
+          getState: sandbox.stub(),
+          subscribe: sandbox.stub(),
+          dispatch: sandbox.stub()
+        }
+        hugeApp.store.createStore = function () {
+          return mockStore;
+        };
+        hugeApp = hugeAppConstructor(hugeApp, document, xhr);
+
+        hugeApp.initApp();
+        requests[0].respond(200, {'Content-Type': 'application/json'}, JSON.stringify(fakeNavAPIResponse));
+
+        expect(mockStore.subscribe.called).to.be.true;
+      });
+    });
+  });
+
 });

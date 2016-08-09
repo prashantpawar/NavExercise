@@ -27,7 +27,7 @@ window.hugeApp.utils = (function (hugeApp, document) {
   }
 })(window.hugeApp, document);
 
-window.hugeApp.store = (function (hugeApp) {
+window.hugeApp.store = (function () {
   var callbacks = [];
   var state;
   function createStore(reducer) {
@@ -40,18 +40,18 @@ window.hugeApp.store = (function (hugeApp) {
         var that = this;
         state = reducer(that.getState(), action);
 
-        callbacks.map(function (cb) {
+        return callbacks.map(function (cb) {
           cb(state); 
         });
       },
       dispatch: function (action) {
         var that = this;
         if(typeof action.then === 'function') {
-          action.then(function (resolvedAction) {
-              that.dispatchWithVal(resolvedAction);
+          return action.then(function (resolvedAction) {
+            return that.dispatchWithVal(resolvedAction);
           });
         } else {
-            that.dispatchWithVal(action);
+          return that.dispatchWithVal(action);
         }
       },
       subscribe: function (cb) {
@@ -62,7 +62,7 @@ window.hugeApp.store = (function (hugeApp) {
   return {
     createStore: createStore
   };
-})(window.hugeApp);
+})();
 
 window.hugeApp.actions = function (hugeApp, XMLHttpRequest) {
   var NAV_OPEN = 'NAV_OPEN';
